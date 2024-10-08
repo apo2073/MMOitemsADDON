@@ -1,0 +1,7 @@
+name: MMoitemsADDON
+version: '1.0'
+main: kr.apo2073.mMoitemsADDON.MMoitemsADDON
+api-version: '1.20'
+authors: [ 아포칼립스 ]
+commands:
+  getSkill:

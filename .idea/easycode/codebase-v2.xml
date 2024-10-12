@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="com.obiscr.chatgpt.settings.EasyCodeState">
+    <option name="projectFiles" value="$PROJECT_DIR$/src/main/java/kr/apo2073/mmoitemsADDON/util/getInfo.java;C:/Users/PC/Desktop/MMOitemsADDON/src/main/java/kr/apo2073/mmoitemsADDON/util/PapiRg.java;C:/Users/PC/Desktop/MMOitemsADDON/src/main/java/kr/apo2073/mmoitemsADDON/MMoItemsADDON.java;C:/Users/PC/Desktop/MMOitemsADDON/src/main/kotlin/kr/apo2073/mMoitemsADDON/cmd/getSkilllCMd.kt;C:/Users/PC/Desktop/MMOitemsADDON/src/main/kotlin/kr/apo2073/mMoitemsADDON/utils/PapiRegist.kt;C:/Users/PC/Desktop/MMOitemsADDON/src/main/kotlin/kr/apo2073/mMoitemsADDON/MMoitemsADDON.kt;C:/Users/PC/Desktop/MMOitemsADDON/build.gradle.kts;C:/Users/PC/Desktop/MMOitemsADDON/settings.gradle.kts" />
+  </component>
+</project>

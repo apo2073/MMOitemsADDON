@@ -1,10 +1,29 @@
 plugins {
     kotlin("jvm") version "2.0.20"
     id("com.github.johnrengelman.shadow") version "8.1.1"
+    id("maven-publish")
 }
 
 group = "kr.apo2073"
 version = "1.0"
+
+afterEvaluate {
+    publishing {
+        publications {
+            register<MavenPublication>("release") {
+                from(components["java"])
+                groupId = "com.github.apo2073"
+                artifactId = "MMOItemsADDON"
+                version = "1.0"
+
+                pom {
+                    name.set("MMOItemsADDON")
+                    description.set("")
+                }
+            }
+        }
+}
+}
 
 repositories {
     mavenCentral()
@@ -17,6 +36,8 @@ repositories {
     maven("https://nexus.phoenixdevt.fr/repository/maven-public/") {
         name="phoenix"
     }
+    maven("https://repo.extendedclip.com/content/repositories/placeholderapi/")
+    maven("https://jitpack.io")
 }
 
 dependencies {
@@ -24,6 +45,7 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     implementation("io.lumine:MythicLib-dist:1.6.2-SNAPSHOT")
     implementation("net.Indyuce:MMOItems-API:6.9.5-SNAPSHOT")
+    compileOnly("me.clip:placeholderapi:2.11.6")
 }
 
 val targetJavaVersion = 17

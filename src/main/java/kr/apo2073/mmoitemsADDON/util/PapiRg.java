@@ -1,5 +1,6 @@
 package kr.apo2073.mmoitemsADDON.util;
 
+import io.lumine.mythic.lib.math3.analysis.function.Add;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -23,11 +24,16 @@ public class PapiRg extends PlaceholderExpansion {
 
     @Override
     public @Nullable String onPlaceholderRequest(Player player, @NotNull String params) {
-        if (params=="") {
+        Addon addon=new Addon(player.getInventory().getItemInMainHand());
+        if (params.contains("right_click")) {
             return "";
         }
-        if (params=="") {
+        if (params.contains("left_click")) {
             return "";
+        }
+
+        if (params.equals("castmode")) {
+            return addon.getItemCastMod();
         }
         return "";
     }

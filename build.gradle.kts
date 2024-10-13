@@ -1,6 +1,7 @@
 plugins {
     kotlin("jvm") version "2.0.20"
     id("com.github.johnrengelman.shadow") version "8.1.1"
+   //id("io.papermc.paperweight.userdev") version "1.7.3"
     id("maven-publish")
 }
 
@@ -42,10 +43,12 @@ repositories {
 
 dependencies {
     compileOnly("io.papermc.paper:paper-api:1.20.1-R0.1-SNAPSHOT")
+    //paperweight.paperDevBundle("1.20.1-R0.1-SNAPSHOT")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     implementation("io.lumine:MythicLib-dist:1.6.2-SNAPSHOT")
     implementation("net.Indyuce:MMOItems-API:6.9.5-SNAPSHOT")
     compileOnly("me.clip:placeholderapi:2.11.6")
+    implementation("com.github.apo2073:ApoLib:1.0.4")
 }
 
 val targetJavaVersion = 17

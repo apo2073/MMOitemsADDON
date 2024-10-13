@@ -2,6 +2,6 @@ package kr.apo2073.mmoitemsADDON.exception;
 
 public class TheresNoItemIdiot extends NullPointerException {
     public TheresNoItemIdiot() {
-        super("아이템 설정이 안되어 있습니다! 플러그인 개발자에게 문의해주세요");
+        super("아이템 설정이 안되어 있습니다! 플러그인 개발자에게 문의해주세요, ");
     }
 }

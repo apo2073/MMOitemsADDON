@@ -31,15 +31,25 @@ public class PapiRg extends PlaceholderExpansion {
         Addon addon=new Addon(player.getInventory().getItemInMainHand());
         for (JsonElement element: addon.getAbilitiesJson()) {
             JsonObject object=element.getAsJsonObject();
-            if (params.equals("right_click")) {
-                if (Objects.equals(object.get("CastMode").getAsString(), "RIGHT_CLICK")) {
-                    return object.get("Id").getAsString();
-                }
+            if (Objects.equals(object.get("CastMode").getAsString(), "SHIFT_RIGHT_CLICK")
+                    && params.equals("SHIFT_RIGHT_CLICK")
+            ) {
+                return object.get("Id").getAsString();
             }
-            if (params.equals("left_click")) {
-                if (Objects.equals(object.get("CastMode").getAsString(), "LEFT_CLICK")) {
-                    return object.get("Id").getAsString();
-                }
+            if (Objects.equals(object.get("CastMode").getAsString(), "SHIFT_LEFT_CLICK")
+                    && params.equals("SHIFT_LEFT_CLICK")
+            ) {
+                return object.get("Id").getAsString();
+            }
+            if (Objects.equals(object.get("CastMode").getAsString(), "RIGHT_CLICK")
+                    && params.equals("RIGHT_CLICK")
+            ) {
+                return object.get("Id").getAsString();
+            }
+            if (Objects.equals(object.get("CastMode").getAsString(), "LEFT_CLICK")
+                    && params.equals("LEFT_CLICK")
+            ) {
+                return object.get("Id").getAsString();
             }
         }
         if (params.equals("castmode")) {

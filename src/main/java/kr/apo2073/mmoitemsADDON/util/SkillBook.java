@@ -68,12 +68,16 @@ public class SkillBook {
 
     public List<String> getLore(JsonArray json, Player player) {
         List<String> lore= new ArrayList<>();
-        Addon addon=new Addon(player);
-        addon.setAbilitiesJson(json);
-        lore.add("§a>§8| §7"+addon.getItemCastMod() +" §8|§e|§8| §7§l"+addon.getItemSkillID());
-        addon.getModifiers().forEach((s, o) -> {
-            lore.add(" §3>§8| §7"+s+"§8: §f"+o);
-        });
+        for (JsonElement element: json) {
+            Addon addon=new Addon(player);
+            addon.setAbilitiesJson(json);
+            JsonObject object=element.getAsJsonObject();
+            String castMode=object.get("CastMode").getAsString();
+            lore.add("§a>§8| §7"+castMode +" §8|§e|§8| §7§l"+addon.getItemSkillID());
+            addon.getModifiers().forEach((s, o) -> {
+                lore.add(" §3>§8| §7"+s+"§8: §f"+o);
+            });
+        }
         return lore;
     }
 

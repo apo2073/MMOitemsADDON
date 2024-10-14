@@ -8,6 +8,7 @@ import kr.apo2073.mmoitemsADDON.exception.WhereIsABILITIES;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.json.simple.JSONArray;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -28,9 +29,9 @@ public class Addon {
         this.nbtItem=NBTItem.get(items);
         String ab=nbtItem.getString("MMOITEMS_ABILITY");
         this.abilitiesJson = new Gson().fromJson(ab, JsonArray.class);
-        nbtItem.getTags().forEach(tags-> {
+        /*nbtItem.getTags().forEach(tags-> {
             plugin.getLogger().info(tags+ " : "+nbtItem.getString(tags));
-        });
+        });*/
     }
 
     public void setPlayer(Player player) { this.player = player; this.item=player.getInventory().getItemInMainHand();}
@@ -86,17 +87,23 @@ public class Addon {
     }
 
     public String getItemCastMod() {
+        StringBuilder builder = new StringBuilder();
         try {
-            JsonElement castModeElement = abilitiesJson.get(0).getAsJsonObject().get("CastMode");
-            if (castModeElement==null) throw new WhereIsABILITIES();
-            return (
-                    castModeElement != null
-                    && !castModeElement.isJsonNull()
-            ) ? castModeElement.getAsString() : "There is No CastMode";
+            for (int i = 0; i < abilitiesJson.size(); i++) {
+                JsonElement castModeElement = abilitiesJson.get(i).getAsJsonObject().get("CastMode");
+                if (castModeElement == null) throw new WhereIsABILITIES();
+
+                builder.append(castModeElement);
+                if (i < abilitiesJson.size() - 1) {
+                    builder.append(", ");
+                }
+            }
+            return !builder.isEmpty() ? builder.toString() : "";
         } catch (WhereIsABILITIES e) {
-            return ChatColor.RED+"NONE";
+            return "";
         }
     }
+
     public JsonArray getAbilityToJSon(String skill, int damage, String castMode) {
         return new Gson().fromJson(
                 "[{\"Id\":\""+skill+"\",\"CastMode\":\""+castMode+"\",\"Modifiers\":{\"damage\":"+damage+"}}]",
@@ -133,9 +140,7 @@ public class Addon {
                     object.getAsJsonObject().addProperty(s, s2);
                 });
             }
-            plugin.getLogger().info(object.getAsString());
             nbtItem.addTag(new ItemTag("MMOITEMS_ABILITY", object.getAsString()));
-            plugin.getLogger().info(nbtItem.getString("MMOITEMS_ABILITY"));
         } catch (Exception e) {
             plugin.getLogger().info(e.getMessage());
         }
@@ -146,7 +151,11 @@ public class Addon {
         } catch (Exception e) {
             plugin.getLogger().info(e.getMessage());
         }
-
+    }
+    public void addAbilities(String json) {
+        JsonArray array=new Gson().fromJson(abilitiesJson, JsonArray.class);
+        array.add(new Gson().fromJson(json, JsonElement.class));
+        nbtItem.addTag(new ItemTag("MMOITEMS_ABILITY", array.getAsString()));
     }
 
     public void apply() {

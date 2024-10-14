@@ -33,20 +33,19 @@ public class Addon {
         });
     }
 
-    public Addon setPlayer(Player player) { this.player = player; this.item=player.getInventory().getItemInMainHand(); return this;}
+    public void setPlayer(Player player) { this.player = player; this.item=player.getInventory().getItemInMainHand();}
     public Player getPlayer() { return player; }
 
-    public Addon setItem(ItemStack item) {
+    public void setItem(ItemStack item) {
         this.item=item;
         this.nbtItem=NBTItem.get(item);
         this.abilitiesJson = JsonParser.parseString(this.nbtItem.getString("MMOITEMS_ABILITY")).getAsJsonArray();
-        return this;
     }
-    public Addon setAbilitiesJson(JsonArray abilitiesJson) { this.abilitiesJson = abilitiesJson; return this;}
+    public void setAbilitiesJson(JsonArray abilitiesJson) { this.abilitiesJson = abilitiesJson;}
 
     public NBTItem getNbtItem() {return nbtItem;}
 
-    public Addon setNbtItem(NBTItem nbtItem) {this.nbtItem = nbtItem; return this;}
+    public void setNbtItem(NBTItem nbtItem) {this.nbtItem = nbtItem;}
 
     public ItemStack getItem() {return item;}
 
@@ -98,6 +97,12 @@ public class Addon {
             return ChatColor.RED+"NONE";
         }
     }
+    public JsonArray getAbilityToJSon(String skill, int damage, String castMode) {
+        return new Gson().fromJson(
+                "[{\"Id\":\""+skill+"\",\"CastMode\":\""+castMode+"\",\"Modifiers\":{\"damage\":"+damage+"}}]",
+                JsonArray.class
+        );
+    }
 
     public Map<String, Object> getModifiers() {
     return Optional.ofNullable(abilitiesJson)
@@ -120,7 +125,7 @@ public class Addon {
     }
 
     @SafeVarargs
-    public final Addon setAbilities(Map<String, String>... value) {
+    public final void setAbilities(Map<String, String>... value) {
         try {
             JsonArray object= new JsonArray();
             for (Map<String,String> map: value) {
@@ -134,7 +139,6 @@ public class Addon {
         } catch (Exception e) {
             plugin.getLogger().info(e.getMessage());
         }
-        return this;
     }
     public void setAbilities(String json) {
         try {

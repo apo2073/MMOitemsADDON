@@ -3,6 +3,20 @@ version: '1.0'
 main: kr.apo2073.mmoitemsADDON.MMoItemsADDON
 api-version: '1.20'
 authors: [ 아포칼립스 ]
+depend:
+  - ApoLib
+softdepend:
+  - PlaceHolder
 commands:
   getSkill:
-  스킬북화:
+  스킬북:
+    description: 스킬북 생성 명령어
+
+permissions:
+  mmoitems.*:
+    children:
+      mmoitems.skillbook: false
+
+
+  mmoitems.skillbook:
+    default: op

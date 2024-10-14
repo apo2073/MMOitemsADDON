@@ -14,8 +14,7 @@ public class AddAbCmd implements CommandExecutor {
     @Override
     public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String[] strings) {
         if (!(commandSender instanceof Player)) return false;
-        Addon addon=new Addon(((Player) commandSender).getInventory().getItemInMainHand());
-        plugin.getLogger().info(addon.getTagsValue("MMOITEMS_ITEM_TYPE"));
+
         return  true;
 
     }

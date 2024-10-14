@@ -1,21 +1,42 @@
 package kr.apo2073.mmoitemsADDON.cmd;
 
-import kr.apo2073.lib.Plugins.msgPerfix;
+import kr.apo2073.mmoitemsADDON.util.Addon;
 import kr.apo2073.mmoitemsADDON.util.SkillBook;
-import net.kyori.adventure.text.Component;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
-import org.bukkit.command.CommandSender;
+import org.bukkit.command.*;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-public class getSkillBookCmd implements CommandExecutor {
+import java.util.List;
+
+public class getSkillBookCmd implements TabExecutor {
     @Override
     public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String[] strings) {
         if (!(commandSender instanceof Player player)) return false;
         // /스킬북화 스킬이름 데미지 CastMode
-
+        if (!player.hasPermission("mmoitems.skillbook")) return true;
+        if (strings.length!=3) return true; // 명령어 사용법
+        String skill=strings[0];
+        int damage= Integer.parseInt(strings[1]);
+        String castMode=strings[2]
+                .replace("S", "SHIFT_")
+                .replace("L", "LEFT_CLICK")
+                .replace("R", "RIGHT_CLICK");
+        Addon addon=new Addon(player);
+        SkillBook skillBook=new SkillBook();
+        ItemStack item=skillBook.getSkillBook(player, addon.getAbilityToJSon(skill, damage, castMode));
+        player.getInventory().addItem(item);
         return true;
+    }
+
+    @Override
+    public @Nullable List<String> onTabComplete(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String[] strings) {
+        return switch (strings.length) {
+            case 1-> List.of("skill");
+            case 2-> List.of("damage");
+            case 3-> List.of("SL", "SR", "R", "L");
+            default -> List.of("");
+        };
     }
 }

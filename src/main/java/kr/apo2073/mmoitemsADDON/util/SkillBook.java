@@ -52,6 +52,10 @@ public class SkillBook {
         }
     }
 
+    public ItemStack getNBTSkillBook() {
+        return null;
+    }
+
     public List<String> getLore(ItemStack item) {
         List<String> lore= new ArrayList<>();
         Addon addon=new Addon(item);

@@ -23,10 +23,13 @@ public class SkillBookEQUIPevent implements Listener {
         ItemStack book=e.getCursor();
         ItemStack item=e.getCurrentItem();
         if (book.getType()!= Material.ENCHANTED_BOOK || item==null) return;
-        if (book.getItemMeta().getPersistentDataContainer().get(new NamespacedKey(MMoItemsADDON.plugin, "IsBOOK"), PersistentDataType.STRING)==null) return;
-        String key=book.getItemMeta().getPersistentDataContainer().get(new NamespacedKey(MMoItemsADDON.plugin, "IsBOOK"), PersistentDataType.STRING);
+        if (book.getItemMeta().getPersistentDataContainer().get(
+                new NamespacedKey(MMoItemsADDON.plugin, "IsBOOK"), PersistentDataType.STRING)==null
+        ) return;
+        String key=book.getItemMeta().getPersistentDataContainer().get(
+                new NamespacedKey(MMoItemsADDON.plugin, "IsBOOK"), PersistentDataType.STRING
+        );
         Addon addon=new Addon(item);
         addon.setAbilities(key);
-        addon.apply();
     }
 }

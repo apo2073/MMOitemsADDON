@@ -147,7 +147,8 @@ public class Addon {
     }
     public void setAbilities(String json) {
         try {
-            nbtItem.addTag(new ItemTag("MMOITEMS_ABILITY", json));
+            abilitiesJson.add(json);
+            nbtItem.addTag(new ItemTag("MMOITEMS_ABILITY", abilitiesJson));
         } catch (Exception e) {
             plugin.getLogger().info(e.getMessage());
         }

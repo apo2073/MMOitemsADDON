@@ -1,6 +1,6 @@
 package kr.apo2073.mmoitemsADDON.cmd;
 
-import kr.apo2073.mmoitemsADDON.util.Addon;
+import kr.apo2073.mmoitemsADDON.util.MMoAddon;
 import kr.apo2073.mmoitemsADDON.util.SkillBook;
 import org.bukkit.command.*;
 import org.bukkit.entity.Player;
@@ -23,9 +23,9 @@ public class getSkillBookCmd implements TabExecutor {
                 .replace("S", "SHIFT_")
                 .replace("L", "LEFT_CLICK")
                 .replace("R", "RIGHT_CLICK");
-        Addon addon=new Addon(player);
+        MMoAddon MMoAddon =new MMoAddon(player);
         SkillBook skillBook=new SkillBook();
-        ItemStack item=skillBook.getSkillBook(player, addon.getAbilityToJSon(skill, damage, castMode));
+        ItemStack item=skillBook.getNBTSkillBook(MMoAddon.getAbilityToJSon(skill, damage, castMode), player);
         player.getInventory().addItem(item);
         return true;
     }

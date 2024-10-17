@@ -8,7 +8,6 @@ import kr.apo2073.mmoitemsADDON.exception.WhereIsABILITIES;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.json.simple.JSONArray;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -16,15 +15,15 @@ import java.util.Optional;
 
 import static kr.apo2073.mmoitemsADDON.MMoItemsADDON.plugin;
 
-public class Addon {
+public class MMoAddon {
     private Player player;
     private JsonArray abilitiesJson;
     private ItemStack item;
     private NBTItem nbtItem;
 
-    public Addon(Player player) { this.player=player; }
+    public MMoAddon(Player player) { this.player=player; }
 
-    public Addon(ItemStack items) {
+    public MMoAddon(ItemStack items) {
         this.item=items;
         this.nbtItem=NBTItem.get(items);
         String ab=nbtItem.getString("MMOITEMS_ABILITY");

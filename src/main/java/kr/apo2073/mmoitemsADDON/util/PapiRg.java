@@ -2,15 +2,12 @@ package kr.apo2073.mmoitemsADDON.util;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import io.lumine.mythic.lib.math3.analysis.function.Add;
-import kr.apo2073.mmoitemsADDON.MMoItemsADDON;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
-import java.util.Objects;
 
 public class PapiRg extends PlaceholderExpansion {
     @Override
@@ -30,8 +27,8 @@ public class PapiRg extends PlaceholderExpansion {
 
     @Override
     public @Nullable String onPlaceholderRequest(Player player, @NotNull String params) {
-        Addon addon = new Addon(player.getInventory().getItemInMainHand());
-        for (JsonElement element : addon.getAbilitiesJson()) {
+        MMoAddon MMoAddon = new MMoAddon(player.getInventory().getItemInMainHand());
+        for (JsonElement element : MMoAddon.getAbilitiesJson()) {
             JsonObject object = element.getAsJsonObject();
             JsonElement castModeElement = object.get("CastMode");
             if (castModeElement != null) {
@@ -40,7 +37,7 @@ public class PapiRg extends PlaceholderExpansion {
                 if (formattedParams.equals(castMode)) {
                     return object.get("Id").getAsString();
                 }
-                for (Map.Entry<String, Object> mod : addon.getModifiers().entrySet()) {
+                for (Map.Entry<String, Object> mod : MMoAddon.getModifiers().entrySet()) {
                     String modifierKey = mod.getKey().toLowerCase();
                     if (formattedParams.equals(castMode + "_" + modifierKey)) {
                         return mod.getValue().toString();
@@ -49,7 +46,11 @@ public class PapiRg extends PlaceholderExpansion {
             }
         }
         if (params.equals("castmode")) {
-            return addon.getItemCastMod();
+            return MMoAddon.getItemCastMod();
+        }
+        if (params.contains("tags_")) {
+            String param=params.replace("tags_", "");
+            return MMoAddon.getTagsValue(param);
         }
         return "";
     }

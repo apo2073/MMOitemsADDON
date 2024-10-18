@@ -3,6 +3,7 @@ package kr.apo2073.mmoitemsADDON;
 import kr.apo2073.lib.Plugins.Register;
 import kr.apo2073.mmoitemsADDON.cmd.AddAbCmd;
 import kr.apo2073.mmoitemsADDON.cmd.getSkillBookCmd;
+import kr.apo2073.mmoitemsADDON.event.SkillBookEQUIPevent;
 import kr.apo2073.mmoitemsADDON.util.PapiRg;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -21,6 +22,7 @@ public class MMoItemsADDON extends JavaPlugin {
                 \\_|  |_/\\_|  |_/\\___/|_|\\__\\___|_| |_| |_|___/
                \s""");
         new Register(this)
+                .resistEventListener(new SkillBookEQUIPevent())
                 .resistCommandExecutor("getSkill", new AddAbCmd())
                 .resistTabExecutor("스킬북", new getSkillBookCmd());
         new PapiRg().register();

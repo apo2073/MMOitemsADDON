@@ -46,7 +46,7 @@ public class PapiRg extends PlaceholderExpansion {
             }
         }
         if (params.equals("castmode")) {
-            return MMoAddon.getItemCastMod();
+            return MMoAddon.getItemCastMode();
         }
         if (params.contains("tags_")) {
             String param=params.replace("tags_", "");

@@ -8,6 +8,7 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.HashMap;
 import java.util.List;
 
 public class getSkillBookCmd implements TabExecutor {
@@ -23,9 +24,18 @@ public class getSkillBookCmd implements TabExecutor {
                 .replace("S", "SHIFT_")
                 .replace("L", "LEFT_CLICK")
                 .replace("R", "RIGHT_CLICK");
-        MMoAddon MMoAddon =new MMoAddon(player);
+        MMoAddon addon =new MMoAddon(player);
         SkillBook skillBook=new SkillBook();
-        ItemStack item=skillBook.getNBTSkillBook(MMoAddon.getAbilityToJSon(skill, damage, castMode), player);
+        HashMap<String, Object> modifiers = new HashMap<>();
+        modifiers.put("damage", damage);
+        ItemStack item;
+        try {
+            item = skillBook.getSkillBook(player, addon.getAbilityToJSon(skill, castMode, modifiers));
+        } catch (Exception e) {
+            commandSender.sendMessage(e.getMessage());
+            e.printStackTrace();
+            return false;
+        }
         player.getInventory().addItem(item);
         return true;
     }

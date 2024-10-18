@@ -1,10 +1,15 @@
 package kr.apo2073.mmoitemsADDON.util;
 
 import com.google.gson.*;
-import io.lumine.mythic.lib.api.item.ItemTag;
 import io.lumine.mythic.lib.api.item.NBTItem;
+import it.unimi.dsi.fastutil.Hash;
 import kr.apo2073.mmoitemsADDON.exception.TheresNoItemIdiot;
 import kr.apo2073.mmoitemsADDON.exception.WhereIsABILITIES;
+import net.Indyuce.mmoitems.ItemStats;
+import net.Indyuce.mmoitems.api.item.mmoitem.LiveMMOItem;
+import net.Indyuce.mmoitems.stat.data.AbilityData;
+import net.Indyuce.mmoitems.stat.data.AbilityListData;
+import net.Indyuce.mmoitems.stat.data.type.StatData;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -13,24 +18,22 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-import static kr.apo2073.mmoitemsADDON.MMoItemsADDON.plugin;
-
 public class MMoAddon {
     private Player player;
     private JsonArray abilitiesJson;
     private ItemStack item;
     private NBTItem nbtItem;
+    private LiveMMOItem liveMMOItem;
 
     public MMoAddon(Player player) { this.player=player; }
 
     public MMoAddon(ItemStack items) {
-        this.item=items;
-        this.nbtItem=NBTItem.get(items);
-        String ab=nbtItem.getString("MMOITEMS_ABILITY");
+        this.item = items;
+        this.nbtItem = NBTItem.get(items);
+        String ab = nbtItem.getString("MMOITEMS_ABILITY");
         this.abilitiesJson = new Gson().fromJson(ab, JsonArray.class);
-        /*nbtItem.getTags().forEach(tags-> {
-            plugin.getLogger().info(tags+ " : "+nbtItem.getString(tags));
-        });*/
+        if (nbtItem.getType()==null) return;
+        this.liveMMOItem = new LiveMMOItem(nbtItem);
     }
 
     public void setPlayer(Player player) { this.player = player; this.item=player.getInventory().getItemInMainHand();}
@@ -40,14 +43,18 @@ public class MMoAddon {
         this.item=item;
         this.nbtItem=NBTItem.get(item);
         this.abilitiesJson = JsonParser.parseString(this.nbtItem.getString("MMOITEMS_ABILITY")).getAsJsonArray();
+        if (nbtItem.getType()==null) return;
+        liveMMOItem=new LiveMMOItem(item);
     }
+    public ItemStack getItem() {return item;}
+
     public void setAbilitiesJson(JsonArray abilitiesJson) { this.abilitiesJson = abilitiesJson;}
 
     public NBTItem getNbtItem() {return nbtItem;}
-
     public void setNbtItem(NBTItem nbtItem) {this.nbtItem = nbtItem;}
 
-    public ItemStack getItem() {return item;}
+    public LiveMMOItem getLiveMMOItem() { return liveMMOItem; }
+    public void setLiveMMOItem(LiveMMOItem liveMMOItem) {this.liveMMOItem = liveMMOItem;}
 
     public String getAbilitiesJsonToString() {
         return abilitiesJson.getAsString();
@@ -103,11 +110,21 @@ public class MMoAddon {
         }
     }
 
-    public JsonArray getAbilityToJSon(String skill, int damage, String castMode) {
-        return new Gson().fromJson(
-                "[{\"Id\":\""+skill+"\",\"CastMode\":\""+castMode+"\",\"Modifiers\":{\"damage\":"+damage+"}}]",
-                JsonArray.class
-        );
+    public JsonArray getAbilityToJSon(String skill, String castMode, HashMap<String,Object>... value) {
+        JsonObject json = new JsonObject();
+        JsonObject modifiers = new JsonObject();
+        for (HashMap<String, Object> map : value) {
+            for (Map.Entry<String, Object> entry : map.entrySet()) {
+                modifiers.addProperty(entry.getKey(), entry.getValue().toString());
+            }
+        }
+        json.addProperty("Id", skill);
+        json.addProperty("CastMode", castMode);
+        json.add("Modifiers", modifiers);
+
+        JsonArray array=new JsonArray();
+        array.add(json);
+        return array;
     }
 
     public Map<String, Object> getModifiers() {
@@ -130,42 +147,49 @@ public class MMoAddon {
         .orElse(new HashMap<>());
     }
 
-    @SafeVarargs
-    public final void setAbilities(Map<String, String>... value) {
-        try {
-            JsonArray object= new JsonArray();
-            for (Map<String,String> map: value) {
-                map.forEach((s, s2) -> {
-                    object.getAsJsonObject().addProperty(s, s2);
-                });
+    public void addAbilities(JsonArray json) {
+        if (liveMMOItem==null) return;
+        if (liveMMOItem.getData(ItemStats.ABILITIES).isEmpty())return;
+        AbilityListData abilityData= ((AbilityListData)liveMMOItem.getData(ItemStats.ABILITIES));
+        AbilityData date=new AbilityData(json.getAsJsonObject());
+        abilityData.add(date);
+        liveMMOItem.replaceData(ItemStats.ABILITIES, abilityData);
+        this.item= liveMMOItem.newBuilder().build();
+        this.nbtItem=NBTItem.get(this.item);
+        this.liveMMOItem=new LiveMMOItem(nbtItem);
+    }
+    public void addAbilities(String skill, String castMode, HashMap<String,Object>... value) {
+        if (liveMMOItem==null) return;
+        if (liveMMOItem.getData(ItemStats.ABILITIES).isEmpty())return;
+        AbilityListData abilityData= ((AbilityListData)liveMMOItem.getData(ItemStats.ABILITIES));
+        JsonObject modifiers = new JsonObject();
+        for (HashMap<String, Object> map : value) {
+            for (Map.Entry<String, Object> entry : map.entrySet()) {
+                modifiers.addProperty(entry.getKey(), entry.getValue().toString());
             }
-            nbtItem.addTag(new ItemTag("MMOITEMS_ABILITY", object.getAsString()));
-        } catch (Exception e) {
-            plugin.getLogger().info(e.getMessage());
         }
-    }
-    public void setAbilities(String json) {
-        try {
-            abilitiesJson.add(json);
-            nbtItem.addTag(new ItemTag("MMOITEMS_ABILITY", abilitiesJson));
-        } catch (Exception e) {
-            plugin.getLogger().info(e.getMessage());
-        }
-    }
-    public void addAbilities(String json) {
-        JsonArray array=new Gson().fromJson(abilitiesJson, JsonArray.class);
-        array.add(new Gson().fromJson(json, JsonElement.class));
-        nbtItem.addTag(new ItemTag("MMOITEMS_ABILITY", array.getAsString()));
-    }
+        JsonObject skillJson = new JsonObject();
+        skillJson.addProperty("Id", skill);
+        skillJson.addProperty("CastMode", castMode);
+        skillJson.add("Modifiers", modifiers);
+        abilityData.add(new AbilityData(skillJson));
 
-    public void apply() {
-        var ref = new Object() {
-            int a = 0;
-        };
-        /*player.getInventory().forEach(itemStack -> {
-            if (itemStack!=this.item) ref.a +=1;
-            else player.getInventory().setItem(ref.a, item);
-        });*/
-        player.getInventory().setItemInMainHand(item);
+        liveMMOItem.replaceData(ItemStats.ABILITIES, abilityData);
+        this.item= liveMMOItem.newBuilder().build();
+        this.nbtItem=NBTItem.get(this.item);
+        this.liveMMOItem=new LiveMMOItem(nbtItem);
+    }
+    public void removeAbilities(String skillID) {
+        if (liveMMOItem==null) return;
+        if (liveMMOItem.getData(ItemStats.ABILITIES).isEmpty())return;
+        AbilityListData abilityData= ((AbilityListData)liveMMOItem.getData(ItemStats.ABILITIES));
+        boolean IsRemoved= abilityData.getAbilities().removeIf(abilityData1 -> {
+            return abilityData1.getHandler().getId().equals(skillID);
+        });
+        if (!IsRemoved) return;
+        liveMMOItem.replaceData(ItemStats.ABILITIES, abilityData);
+        this.item= liveMMOItem.newBuilder().build();
+        this.nbtItem=NBTItem.get(this.item);
+        this.liveMMOItem=new LiveMMOItem(nbtItem);
     }
 }

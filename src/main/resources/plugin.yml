@@ -8,7 +8,7 @@ depend:
 softdepend:
   - PlaceHolder
 commands:
-  getSkill:
+  #getSkill:
   스킬북:
     description: 스킬북 생성 명령어
 
@@ -16,7 +16,13 @@ permissions:
   mmoitems.*:
     children:
       mmoitems.skillbook: false
+      mmoitems.magic: false
+      mmoitems.skillbookO: false
 
 
   mmoitems.skillbook:
+    default: op
+  mmoitems.magic:
+    default: op
+  mmoitems.skillbookO:
     default: op

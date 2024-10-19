@@ -27,30 +27,35 @@ public class PapiRg extends PlaceholderExpansion {
 
     @Override
     public @Nullable String onPlaceholderRequest(Player player, @NotNull String params) {
-        MMoAddon MMoAddon = new MMoAddon(player.getInventory().getItemInMainHand());
-        for (JsonElement element : MMoAddon.getAbilitiesJson()) {
-            JsonObject object = element.getAsJsonObject();
-            JsonElement castModeElement = object.get("CastMode");
-            if (castModeElement != null) {
-                String castMode = castModeElement.getAsString().toLowerCase();
-                String formattedParams = params.toLowerCase();
-                if (formattedParams.equals(castMode)) {
-                    return object.get("Id").getAsString();
-                }
-                for (Map.Entry<String, Object> mod : MMoAddon.getModifiers().entrySet()) {
-                    String modifierKey = mod.getKey().toLowerCase();
-                    if (formattedParams.equals(castMode + "_" + modifierKey)) {
-                        return mod.getValue().toString();
+        try {
+            MMoAddon addon = new MMoAddon(player.getInventory().getItemInMainHand());
+            for (JsonElement element : addon.getAbilitiesJson()) {
+                JsonObject object = element.getAsJsonObject();
+                JsonElement castModeElement = object.get("CastMode");
+                if (castModeElement != null) {
+                    String castMode = castModeElement.getAsString().toLowerCase();
+                    String formattedParams = params.toLowerCase();
+                    if (formattedParams.equals(castMode)) {
+                        return object.get("Id").getAsString();
+                    }
+                    for (Map.Entry<String, Object> mod : addon.getModifiers().entrySet()) {
+                        String modifierKey = mod.getKey().toLowerCase();
+                        if (formattedParams.equals(castMode + "_" + modifierKey)) {
+                            return mod.getValue().toString();
+                        }
                     }
                 }
             }
-        }
-        if (params.equals("castmode")) {
-            return MMoAddon.getItemCastMode();
-        }
-        if (params.contains("tags_")) {
-            String param=params.replace("tags_", "");
-            return MMoAddon.getTagsValue(param);
+            if (params.equals("castmode")) {
+                return addon.getItemCastMode();
+            }
+            if (params.contains("tags_")) {
+                String param = params.replace("tags_", "");
+                return addon.getTagsValue(param);
+            }
+            if (params.equals("tags")) addon.getTags();
+        } catch (Exception e) {
+            return e.getMessage();
         }
         return "";
     }

@@ -34,7 +34,7 @@ public class MMoAddon {
         this.liveMMOItem = new LiveMMOItem(nbtItem);
     }
 
-    public void setPlayer(Player player) { this.player = player; this.item=player.getInventory().getItemInMainHand();}
+    public void setPlayer(Player player) { this.player = player;}
     public Player getPlayer() { return player; }
 
     public void setItem(ItemStack item) {
@@ -165,11 +165,14 @@ public class MMoAddon {
     public void addAbilities(String skill, String castMode, HashMap<String,Object>... value) {
         try {
             if (liveMMOItem == null) return;
-            if (liveMMOItem.getData(ItemStats.ABILITIES).isEmpty()) return;
-            AbilityListData abilityData = ((AbilityListData) liveMMOItem.getData(ItemStats.ABILITIES));
+            AbilityListData abilityData;
+            if (liveMMOItem.hasData(ItemStats.ABILITIES)) abilityData = ((AbilityListData) liveMMOItem.getData(ItemStats.ABILITIES));
+            else abilityData= new AbilityListData();
             JsonObject modifiers = new JsonObject();
             for (HashMap<String, Object> map : value) {
                 for (Map.Entry<String, Object> entry : map.entrySet()) {
+                    if (entry==null) continue;
+                    if (entry.getValue()==null) entry.setValue(0.0);
                     modifiers.addProperty(entry.getKey(), entry.getValue().toString());
                 }
             }
@@ -179,7 +182,7 @@ public class MMoAddon {
             skillJson.add("Modifiers", modifiers);
             abilityData.add(new AbilityData(skillJson));
 
-            liveMMOItem.replaceData(ItemStats.ABILITIES, abilityData);
+            liveMMOItem.setData(ItemStats.ABILITIES, abilityData);
             this.item = liveMMOItem.newBuilder().build();
             this.nbtItem = NBTItem.get(this.item);
             this.liveMMOItem = new LiveMMOItem(nbtItem);

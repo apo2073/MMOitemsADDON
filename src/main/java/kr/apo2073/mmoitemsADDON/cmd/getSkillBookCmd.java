@@ -2,7 +2,9 @@ package kr.apo2073.mmoitemsADDON.cmd;
 
 import kr.apo2073.mmoitemsADDON.util.MMoAddon;
 import kr.apo2073.mmoitemsADDON.util.SkillBook;
-import org.bukkit.command.*;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabExecutor;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -15,20 +17,20 @@ public class getSkillBookCmd implements TabExecutor {
     @Override
     public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String[] strings) {
         if (!(commandSender instanceof Player player)) return false;
-        // /스킬북화 스킬이름 데미지 CastMode
         if (!player.hasPermission("mmoitems.skillbook")) return true;
         if (strings.length!=3) return true; // 명령어 사용법
+
         String skill=strings[0];
-        int damage= Integer.parseInt(strings[1]);
-        String castMode=strings[2]
-                .replace("S", "SHIFT_")
-                .replace("L", "LEFT_CLICK")
-                .replace("R", "RIGHT_CLICK");
+        //double damage= Double.parseDouble(strings[2]);
+        String castMode=strings[1];
+
         MMoAddon addon =new MMoAddon(player);
         SkillBook skillBook=new SkillBook();
         HashMap<String, Object> modifiers = new HashMap<>();
-        modifiers.put("damage", damage);
+        //modifiers.put("damage", damage);
+        modifiers.put("cooldown", strings[2]);
         ItemStack item;
+
         try {
             item = skillBook.getSkillBook(player, addon.getAbilityToJSon(skill, castMode, modifiers));
         } catch (Exception e) {
@@ -36,6 +38,7 @@ public class getSkillBookCmd implements TabExecutor {
             e.printStackTrace();
             return false;
         }
+
         player.getInventory().addItem(item);
         return true;
     }
@@ -44,8 +47,9 @@ public class getSkillBookCmd implements TabExecutor {
     public @Nullable List<String> onTabComplete(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String[] strings) {
         return switch (strings.length) {
             case 1-> List.of("skill");
-            case 2-> List.of("damage");
-            case 3-> List.of("SL", "SR", "R", "L");
+            //case 3-> List.of("damage");
+            case 2-> List.of("SHIFT_LEFT_CLICK", "SHIFT_RIGHT_CLICK", "RIGHT_CLICK", "LEFT_CLICK");
+            case 3-> List.of("cooldown");
             default -> List.of("");
         };
     }

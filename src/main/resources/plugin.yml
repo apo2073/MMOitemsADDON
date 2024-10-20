@@ -1,4 +1,4 @@
-name: MMoitemsADDON
+name: MMOItemsADDON
 version: '1.0'
 main: kr.apo2073.mmoitemsADDON.MMoItemsADDON
 api-version: '1.20'
@@ -8,9 +8,11 @@ depend:
 softdepend:
   - PlaceHolder
 commands:
-  #getSkill:
+  getSkill:
   스킬북:
     description: 스킬북 생성 명령어
+  스킬북추출:
+    description: 스킬북 추출 명령어
 
 permissions:
   mmoitems.*:

@@ -29,31 +29,35 @@ public class PapiRg extends PlaceholderExpansion {
     public @Nullable String onPlaceholderRequest(Player player, @NotNull String params) {
         try {
             MMoAddon addon = new MMoAddon(player.getInventory().getItemInMainHand());
+            String formattedParams = params.toLowerCase();
+
             for (JsonElement element : addon.getAbilitiesJson()) {
                 JsonObject object = element.getAsJsonObject();
                 JsonElement castModeElement = object.get("CastMode");
                 if (castModeElement != null) {
                     String castMode = castModeElement.getAsString().toLowerCase();
-                    String formattedParams = params.toLowerCase();
                     if (formattedParams.equals(castMode)) {
                         return object.get("Id").getAsString();
                     }
-                    for (Map.Entry<String, Object> mod : addon.getModifiers().entrySet()) {
-                        String modifierKey = mod.getKey().toLowerCase();
-                        if (formattedParams.equals(castMode + "_" + modifierKey)) {
-                            return mod.getValue().toString();
+                    JsonObject modifiers = object.getAsJsonObject("Modifiers");
+                    if (modifiers != null) {
+                        for (Map.Entry<String, JsonElement> entry : modifiers.entrySet()) {
+                            String modifierKey = entry.getKey().toLowerCase();
+                            if (formattedParams.equals(castMode + "_" + modifierKey)) {
+                                return entry.getValue().getAsString();
+                            }
                         }
                     }
                 }
             }
             if (params.equals("castmode")) {
-                return addon.getItemCastMode();
+                return addon.getItemCastMode().replace("\"", "");
             }
             if (params.contains("tags_")) {
                 String param = params.replace("tags_", "");
                 return addon.getTagsValue(param);
             }
-            if (params.equals("tags")) addon.getTags();
+            if (params.equals("tags")) addon.getNbtItem().getTags();
         } catch (Exception e) {
             return e.getMessage();
         }

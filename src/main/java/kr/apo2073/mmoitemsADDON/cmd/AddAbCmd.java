@@ -18,7 +18,7 @@ public class AddAbCmd implements CommandExecutor {
         MMoAddon addon=new MMoAddon(item);
         HashMap<String, Object> modifiers = new HashMap<>();
         modifiers.put("damage", "10.0");
-        addon.addAbilities("FROZEN_AURA", "SHIFT_LEFT_CLICK", modifiers);
+        addon.addAbilities("GRAND_HEAL", "SHIFT_LEFT_CLICK", modifiers);
         //addon.removeAbilities("FROZEN_AURA");
         player.getInventory().setItemInMainHand(addon.getItem());
         return  true;

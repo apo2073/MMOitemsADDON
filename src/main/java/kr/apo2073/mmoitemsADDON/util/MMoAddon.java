@@ -145,6 +145,7 @@ public class MMoAddon {
         .orElse(new HashMap<>());
     }
 
+    @Deprecated
     public void addAbilities(String json) {
         if (liveMMOItem == null || liveMMOItem.getData(ItemStats.ABILITIES).isEmpty()) return;
         JsonElement element = new Gson().fromJson(json, JsonElement.class);
@@ -171,8 +172,7 @@ public class MMoAddon {
             JsonObject modifiers = new JsonObject();
             for (HashMap<String, Object> map : value) {
                 for (Map.Entry<String, Object> entry : map.entrySet()) {
-                    if (entry==null) continue;
-                    if (entry.getValue()==null) entry.setValue(0.0);
+                    if (entry==null || entry.getValue()==null || entry.getKey()==null) continue;
                     modifiers.addProperty(entry.getKey(), entry.getValue().toString());
                 }
             }
@@ -186,22 +186,26 @@ public class MMoAddon {
             this.item = liveMMOItem.newBuilder().build();
             this.nbtItem = NBTItem.get(this.item);
             this.liveMMOItem = new LiveMMOItem(nbtItem);
-        } catch (Exception e) {
+        } catch (NullPointerException e) {
             e.printStackTrace();
         }
     }
 
     public void removeAbilities(String skillID) {
-        if (liveMMOItem==null) return;
-        if (liveMMOItem.getData(ItemStats.ABILITIES).isEmpty())return;
-        AbilityListData abilityData= ((AbilityListData)liveMMOItem.getData(ItemStats.ABILITIES));
-        boolean IsRemoved= abilityData.getAbilities().removeIf(abilityData1 -> {
-            return abilityData1.getHandler().getId().equals(skillID);
-        });
-        if (!IsRemoved) return;
-        liveMMOItem.replaceData(ItemStats.ABILITIES, abilityData);
-        this.item= liveMMOItem.newBuilder().build();
-        this.nbtItem=NBTItem.get(this.item);
-        this.liveMMOItem=new LiveMMOItem(nbtItem);
+        try {
+            if (liveMMOItem==null) return;
+            if (liveMMOItem.getData(ItemStats.ABILITIES).isEmpty())return;
+            AbilityListData abilityData= ((AbilityListData)liveMMOItem.getData(ItemStats.ABILITIES));
+            boolean IsRemoved= abilityData.getAbilities().removeIf(abilityData1 -> {
+                return abilityData1.getHandler().getId().equals(skillID);
+            });
+            if (!IsRemoved) return;
+            liveMMOItem.replaceData(ItemStats.ABILITIES, abilityData);
+            this.item= liveMMOItem.newBuilder().build();
+            this.nbtItem=NBTItem.get(this.item);
+            this.liveMMOItem=new LiveMMOItem(nbtItem);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

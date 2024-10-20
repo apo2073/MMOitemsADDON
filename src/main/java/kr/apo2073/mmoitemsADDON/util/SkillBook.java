@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SkillBook {
+    @Deprecated
     public ItemStack getSkillBook(Player player, ItemStack item) {
         MMoAddon addon =new MMoAddon(item);
         addon.setPlayer(player);

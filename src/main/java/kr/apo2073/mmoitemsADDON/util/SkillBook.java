@@ -23,23 +23,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SkillBook {
-    @Deprecated
-    public ItemStack getSkillBook(Player player, ItemStack item) {
-        MMoAddon addon =new MMoAddon(item);
-        addon.setPlayer(player);
-        ItemStack book= new ItemBuilder(new ItemStack(Material.ENCHANTED_BOOK))
-                .setItemName(CompKt.txt("§l§d스킬북 §b[ "+ addon.getItemName()+ " §b]"))
-                .setLore(getLore(item))
-                .build();
-        ItemMeta meta= book.getItemMeta();
-        meta.getPersistentDataContainer().set(new NamespacedKey(MMoItemsADDON.plugin, "IsBOOK"), PersistentDataType.STRING, addon.getTagsValue("MMOITEMS_ABILITY"));
-        book.setItemMeta(meta);
-        NBTItem nbtItem=NBTItem.get(book);
-        LiveMMOItem liveMMOItem=new LiveMMOItem(book);
-        AbilityData data=new AbilityData(addon.getAbilitiesJson().getAsJsonObject());
-        AbilityListData listData=new AbilityListData(data);
-        liveMMOItem.replaceData(ItemStats.ABILITIES, listData);
-        return liveMMOItem.newBuilder().build();
+    public ItemStack getSkillBook(ItemStack item) {
+        try {
+            MMoAddon addon = new MMoAddon(item);
+            ItemStack book = new ItemBuilder(new ItemStack(Material.ENCHANTED_BOOK))
+                    .setItemName(CompKt.txt("§l§d스킬북 §b[ " + addon.getItemName() + " §b]"))
+                    .setLore(getLore(item))
+                    .build();
+            ItemMeta meta = book.getItemMeta();
+            meta.getPersistentDataContainer().set(new NamespacedKey(MMoItemsADDON.plugin, "json"), PersistentDataType.STRING, addon.getTagsValue("MMOITEMS_ABILITY"));
+            book.setItemMeta(meta);
+            return book;
+        } catch (Exception e) {
+            return null;
+        }
     }
     public ItemStack getSkillBook(Player player, JsonArray json) {
         try {

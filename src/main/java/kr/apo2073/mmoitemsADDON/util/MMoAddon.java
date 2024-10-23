@@ -208,4 +208,21 @@ public class MMoAddon {
             e.printStackTrace();
         }
     }
+    public void removeAbilitiesFromCastMode(String castMode) {
+        try {
+            if (liveMMOItem==null) return;
+            if (liveMMOItem.getData(ItemStats.ABILITIES).isEmpty())return;
+            AbilityListData abilityData= ((AbilityListData)liveMMOItem.getData(ItemStats.ABILITIES));
+            boolean IsRemoved= abilityData.getAbilities().removeIf(abilityData1 -> {
+                return abilityData1.toJson().get("CastMode").equals(castMode);
+            });
+            if (!IsRemoved) return;
+            liveMMOItem.replaceData(ItemStats.ABILITIES, abilityData);
+            this.item= liveMMOItem.newBuilder().build();
+            this.nbtItem=NBTItem.get(this.item);
+            this.liveMMOItem=new LiveMMOItem(nbtItem);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }

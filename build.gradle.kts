@@ -39,6 +39,7 @@ repositories {
     }
     maven("https://repo.extendedclip.com/content/repositories/placeholderapi/")
     maven("https://jitpack.io")
+    maven("https://repo.skriptlang.org/releases")
 }
 
 dependencies {
@@ -49,6 +50,7 @@ dependencies {
     implementation("net.Indyuce:MMOItems-API:6.9.5-SNAPSHOT")
     compileOnly("me.clip:placeholderapi:2.11.6")
     implementation("com.github.apo2073:ApoLib:1.0.4")
+    implementation("com.github.SkriptLang:Skript:2.9.3")
 }
 
 val targetJavaVersion = 17

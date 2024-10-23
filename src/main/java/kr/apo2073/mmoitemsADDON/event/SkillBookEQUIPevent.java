@@ -56,6 +56,7 @@ public class SkillBookEQUIPevent implements Listener {
                         }
                     }
                 }
+                addon.removeAbilitiesFromCastMode(cast);
                 addon.addAbilities(id, cast, modifiersMap);
                 e.setCurrentItem(addon.getItem());
             }

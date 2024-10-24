@@ -34,6 +34,7 @@ repositories {
     maven("https://oss.sonatype.org/content/groups/public/") {
         name = "sonatype"
     }
+    maven("https://nexus.phoenixdvpt.fr/repository/maven-public/")
     maven("https://nexus.phoenixdevt.fr/repository/maven-public/") {
         name="phoenix"
     }
@@ -46,9 +47,15 @@ dependencies {
     compileOnly("io.papermc.paper:paper-api:1.20.1-R0.1-SNAPSHOT")
     //paperweight.paperDevBundle("1.20.1-R0.1-SNAPSHOT")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
+
     implementation("io.lumine:MythicLib-dist:1.6.2-SNAPSHOT")
     implementation("net.Indyuce:MMOItems-API:6.9.5-SNAPSHOT")
+    compileOnly("io.lumine:MythicLib-dist:1.6.2-SNAPSHOT")
+    compileOnly("net.Indyuce:MMOCore-API:1.12.1-SNAPSHOT")
+    implementation(files("libs/MythicMobs-5.6.2.jar"))
+
     compileOnly("me.clip:placeholderapi:2.11.6")
+
     implementation("com.github.apo2073:ApoLib:1.0.4")
     implementation("com.github.SkriptLang:Skript:2.9.3")
 }

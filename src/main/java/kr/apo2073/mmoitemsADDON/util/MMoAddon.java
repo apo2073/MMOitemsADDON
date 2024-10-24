@@ -1,13 +1,25 @@
 package kr.apo2073.mmoitemsADDON.util;
 
 import com.google.gson.*;
+import io.lumine.mythic.api.MythicPlugin;
+import io.lumine.mythic.api.mobs.MythicMob;
+import io.lumine.mythic.lib.MythicLib;
 import io.lumine.mythic.lib.api.item.NBTItem;
+import io.lumine.mythic.lib.manager.SkillManager;
+import io.lumine.mythic.lib.skill.Skill;
+import io.lumine.mythic.lib.skill.SkillMetadata;
+import io.lumine.mythic.lib.skill.handler.MythicMobsSkillHandler;
+import io.lumine.mythic.lib.skill.handler.SkillHandler;
 import jdk.jfr.Description;
 import jdk.jfr.Experimental;
+import kr.apo2073.mmoitemsADDON.MMoItemsADDON;
 import kr.apo2073.mmoitemsADDON.exception.TheresNoItemIdiot;
 import kr.apo2073.mmoitemsADDON.exception.WhereIsABILITIES;
+import net.Indyuce.mmocore.api.MMOCoreAPI;
 import net.Indyuce.mmoitems.ItemStats;
 import net.Indyuce.mmoitems.api.item.mmoitem.LiveMMOItem;
+import net.Indyuce.mmoitems.api.player.PlayerData;
+import net.Indyuce.mmoitems.comp.mmocore.MMOCoreHook;
 import net.Indyuce.mmoitems.stat.data.AbilityData;
 import net.Indyuce.mmoitems.stat.data.AbilityListData;
 import org.bukkit.ChatColor;
@@ -19,6 +31,7 @@ import java.util.Map;
 import java.util.Optional;
 
 public class MMoAddon {
+    private MMoItemsADDON mma=MMoItemsADDON.plugin;
     private Player player;
     private JsonArray abilitiesJson;
     private ItemStack item;
@@ -190,6 +203,13 @@ public class MMoAddon {
             this.item = liveMMOItem.newBuilder().build();
             this.nbtItem = NBTItem.get(this.item);
             this.liveMMOItem = new LiveMMOItem(nbtItem);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void addSkills(String skill) {
+        try {
         } catch (Exception e) {
             e.printStackTrace();
         }

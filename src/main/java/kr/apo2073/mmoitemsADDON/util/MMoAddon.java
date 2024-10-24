@@ -2,6 +2,8 @@ package kr.apo2073.mmoitemsADDON.util;
 
 import com.google.gson.*;
 import io.lumine.mythic.lib.api.item.NBTItem;
+import jdk.jfr.Description;
+import jdk.jfr.Experimental;
 import kr.apo2073.mmoitemsADDON.exception.TheresNoItemIdiot;
 import kr.apo2073.mmoitemsADDON.exception.WhereIsABILITIES;
 import net.Indyuce.mmoitems.ItemStats;
@@ -34,9 +36,12 @@ public class MMoAddon {
         this.liveMMOItem = new LiveMMOItem(nbtItem);
     }
 
+    @Deprecated
     public void setPlayer(Player player) { this.player = player;}
+    @Deprecated
     public Player getPlayer() { return player; }
 
+    public ItemStack getItem() { return item; }
     public void setItem(ItemStack item) {
         this.item=item;
         this.nbtItem=NBTItem.get(item);
@@ -44,7 +49,6 @@ public class MMoAddon {
         if (nbtItem.getType()==null) return;
         liveMMOItem=new LiveMMOItem(item);
     }
-    public ItemStack getItem() {return item;}
 
     public void setAbilitiesJson(JsonArray abilitiesJson) { this.abilitiesJson = abilitiesJson;}
 
@@ -65,7 +69,6 @@ public class MMoAddon {
         return nbtItem.getTags().toString();
     }
     public String getTagsValue(String tags) { return nbtItem.getString(tags); }
-    // [{"Id":"FROZEN_AURA","CastMode":"RIGHT_CLICK","Modifiers":{"duration":8.0,"cooldown":12.0,"amplifier":2.0,"radius":10.0}}]
 
     public String getItemId() {
         if (item==null || nbtItem==null)
@@ -81,10 +84,7 @@ public class MMoAddon {
         try {
             JsonElement idElement = abilitiesJson.get(0).getAsJsonObject().get("Id");
             if (idElement==null) throw new WhereIsABILITIES();
-            return (
-                    idElement != null
-                    && !idElement.isJsonNull()
-            ) ? idElement.getAsString() : "There is No ID";
+            return !idElement.isJsonNull() ? idElement.getAsString() : "There is No ID";
         } catch (WhereIsABILITIES e) {
             return ChatColor.RED+"NONE";
         }
@@ -108,7 +108,8 @@ public class MMoAddon {
         }
     }
 
-    public JsonArray getAbilityToJSon(String skill, String castMode, HashMap<String,Object>... value) {
+    @SafeVarargs
+    public final JsonArray getAbilityToJSon(String skill, String castMode, HashMap<String, Object>... value) {
         JsonObject json = new JsonObject();
         JsonObject modifiers = new JsonObject();
         for (HashMap<String, Object> map : value) {
@@ -126,26 +127,26 @@ public class MMoAddon {
     }
 
     public Map<String, Object> getModifiers() {
-    return Optional.ofNullable(abilitiesJson)
-        .filter(array -> !array.isEmpty())
-        .map(array -> array.get(0).getAsJsonObject().getAsJsonObject("Modifiers"))
-        .map(modifiers -> {
-            Map<String, Object> result = new HashMap<>();
-            for (Map.Entry<String, JsonElement> entry : modifiers.entrySet()) {
-                JsonElement value = entry.getValue();
-                if (value.isJsonPrimitive()) {
-                    JsonPrimitive primitive = value.getAsJsonPrimitive();
-                    if (primitive.isNumber()) result.put(entry.getKey(), primitive.getAsDouble());
-                    else if (primitive.isString()) result.put(entry.getKey(), primitive.getAsString());
-                    else if (primitive.isBoolean()) result.put(entry.getKey(), primitive.getAsBoolean());
+        return Optional.ofNullable(abilitiesJson)
+            .filter(array -> !array.isEmpty())
+            .map(array -> array.get(0).getAsJsonObject().getAsJsonObject("Modifiers"))
+            .map(modifiers -> {
+                Map<String, Object> result = new HashMap<>();
+                for (Map.Entry<String, JsonElement> entry : modifiers.entrySet()) {
+                    JsonElement value = entry.getValue();
+                    if (value.isJsonPrimitive()) {
+                        JsonPrimitive primitive = value.getAsJsonPrimitive();
+                        if (primitive.isNumber()) result.put(entry.getKey(), primitive.getAsDouble());
+                        else if (primitive.isString()) result.put(entry.getKey(), primitive.getAsString());
+                        else if (primitive.isBoolean()) result.put(entry.getKey(), primitive.getAsBoolean());
+                    }
                 }
-            }
-            return result;
-        })
-        .orElse(new HashMap<>());
+                return result;
+            }).orElse(new HashMap<>());
     }
 
     @Deprecated
+    @Description("불완전")
     public void addAbilities(String json) {
         if (liveMMOItem == null || liveMMOItem.getData(ItemStats.ABILITIES).isEmpty()) return;
         JsonElement element = new Gson().fromJson(json, JsonElement.class);
@@ -163,7 +164,8 @@ public class MMoAddon {
         this.liveMMOItem = new LiveMMOItem(nbtItem);
     }
 
-    public void addAbilities(String skill, String castMode, HashMap<String,Object>... value) {
+    @SafeVarargs
+    public final void addAbilities(String skill, String castMode, HashMap<String, Object>... value) {
         try {
             if (liveMMOItem == null) return;
             AbilityListData abilityData;
@@ -173,20 +175,22 @@ public class MMoAddon {
             for (HashMap<String, Object> map : value) {
                 for (Map.Entry<String, Object> entry : map.entrySet()) {
                     if (entry==null || entry.getValue()==null || entry.getKey()==null) continue;
-                    modifiers.addProperty(entry.getKey(), entry.getValue().toString());
+                    modifiers.addProperty(entry.getKey(), (Double) entry.getValue());
                 }
             }
             JsonObject skillJson = new JsonObject();
+
             skillJson.addProperty("Id", skill);
             skillJson.addProperty("CastMode", castMode);
             skillJson.add("Modifiers", modifiers);
+
             abilityData.add(new AbilityData(skillJson));
 
             liveMMOItem.setData(ItemStats.ABILITIES, abilityData);
             this.item = liveMMOItem.newBuilder().build();
             this.nbtItem = NBTItem.get(this.item);
             this.liveMMOItem = new LiveMMOItem(nbtItem);
-        } catch (NullPointerException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -198,23 +202,6 @@ public class MMoAddon {
             AbilityListData abilityData= ((AbilityListData)liveMMOItem.getData(ItemStats.ABILITIES));
             boolean IsRemoved= abilityData.getAbilities().removeIf(abilityData1 -> {
                 return abilityData1.getHandler().getId().equals(skillID);
-            });
-            if (!IsRemoved) return;
-            liveMMOItem.replaceData(ItemStats.ABILITIES, abilityData);
-            this.item= liveMMOItem.newBuilder().build();
-            this.nbtItem=NBTItem.get(this.item);
-            this.liveMMOItem=new LiveMMOItem(nbtItem);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-    public void removeAbilitiesFromCastMode(String castMode) {
-        try {
-            if (liveMMOItem==null) return;
-            if (liveMMOItem.getData(ItemStats.ABILITIES).isEmpty())return;
-            AbilityListData abilityData= ((AbilityListData)liveMMOItem.getData(ItemStats.ABILITIES));
-            boolean IsRemoved= abilityData.getAbilities().removeIf(abilityData1 -> {
-                return abilityData1.toJson().get("CastMode").equals(castMode);
             });
             if (!IsRemoved) return;
             liveMMOItem.replaceData(ItemStats.ABILITIES, abilityData);

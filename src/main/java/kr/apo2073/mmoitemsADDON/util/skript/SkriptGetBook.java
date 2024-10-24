@@ -6,11 +6,13 @@ import ch.njol.skript.lang.ExpressionType;
 import ch.njol.skript.lang.SkriptParser;
 import ch.njol.skript.lang.util.SimpleExpression;
 import ch.njol.util.Kleenean;
+import jdk.jfr.Experimental;
 import kr.apo2073.mmoitemsADDON.util.SkillBook;
 import org.bukkit.event.Event;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
+@Experimental
 public class SkriptGetBook extends SimpleExpression<ItemStack> {
     static {
         Skript.registerExpression(SkriptGetBook.class, ItemStack.class, ExpressionType.SIMPLE, "[skill] book of %item%");

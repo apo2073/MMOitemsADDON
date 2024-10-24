@@ -1,5 +1,7 @@
 package kr.apo2073.mmoitemsADDON;
 
+import ch.njol.skript.Skript;
+import ch.njol.skript.SkriptAddon;
 import kr.apo2073.lib.Plugins.Register;
 import kr.apo2073.mmoitemsADDON.cmd.AddAbCmd;
 import kr.apo2073.mmoitemsADDON.cmd.getSkillBookCmd;
@@ -7,10 +9,15 @@ import kr.apo2073.mmoitemsADDON.cmd.getSkillBookFromItem;
 import kr.apo2073.mmoitemsADDON.event.SkillBookEQUIPevent;
 import kr.apo2073.mmoitemsADDON.util.PapiRg;
 import kr.apo2073.mmoitemsADDON.util.SkillBookGUI;
+import kr.apo2073.mmoitemsADDON.util.skript.SkriptGetBook;
+import kr.apo2073.mmoitemsADDON.util.skript.SkriptGetID;
+import me.clip.placeholderapi.PlaceholderAPIPlugin;
+import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class MMoItemsADDON extends JavaPlugin {
     public static MMoItemsADDON plugin;
+    private SkriptAddon addons;
     @Override
     public void onEnable() {
         plugin=this;
@@ -29,7 +36,10 @@ public class MMoItemsADDON extends JavaPlugin {
                 .resistCommandExecutor("getSkill", new AddAbCmd())
                 .resistTabExecutor("스킬북", new getSkillBookCmd())
                 .resistCommandExecutor("스킬북추출", new getSkillBookFromItem());
-        new PapiRg().register();
+        if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) new PapiRg().register();
+        addons=Skript.registerAddon(this);
+        new SkriptGetBook();
+        new SkriptGetID();
     }
 
     @Override

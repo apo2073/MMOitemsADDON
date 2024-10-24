@@ -18,6 +18,7 @@ import org.bukkit.persistence.PersistentDataType;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public class SkillBookEQUIPevent implements Listener {
     @EventHandler
@@ -26,9 +27,11 @@ public class SkillBookEQUIPevent implements Listener {
         ItemStack book = e.getCursor();
         ItemStack item = e.getCurrentItem();
 
-        if (book == null || book.getType() != Material.ENCHANTED_BOOK
-                || book.getItemMeta().displayName().contains(Component.text("스킬북"))
-                || item == null || item.getType()==Material.AIR) return;
+        if (book.getType() != Material.ENCHANTED_BOOK
+                || Objects.requireNonNull(
+                        book.getItemMeta()
+                                .displayName()).contains(Component.text("스킬북"))
+                || item == null || item.getType() == Material.AIR) return;
         String key = book.getItemMeta().getPersistentDataContainer().get(
                 new NamespacedKey(MMoItemsADDON.plugin, "json"), PersistentDataType.STRING
         );
@@ -39,24 +42,30 @@ public class SkillBookEQUIPevent implements Listener {
         JsonArray json = new Gson().fromJson(key, JsonArray.class);
         try {
             for (JsonElement element : json) {
-                JsonObject abilityObj = element.getAsJsonObject();
-                String id = abilityObj.get("Id").getAsString();
-                String cast = abilityObj.get("CastMode").getAsString();
+
+                for (JsonElement je: addon.getAbilitiesJson())
+                    if (je.getAsJsonObject().get("CastMode")
+                            .equals(element.getAsJsonObject().get("CastMode")))
+                        addon.removeAbilities(je.getAsJsonObject()
+                                .get("Id").getAsString());
+
+                JsonObject object = element.getAsJsonObject();
+                String id = object.get("Id").getAsString();
+                String cast = object.get("CastMode").getAsString();
                 HashMap<String, Object> modifiersMap = new HashMap<>();
-                JsonObject modifiersJson = abilityObj.getAsJsonObject("Modifiers");
-                for (Map.Entry<String, JsonElement> entry : modifiersJson.entrySet()) {
+                JsonObject modJson = object.getAsJsonObject("Modifiers");
+                for (Map.Entry<String, JsonElement> entry : modJson.entrySet()) {
                     if (entry.getValue().isJsonPrimitive()) {
-                        JsonPrimitive primitive = entry.getValue().getAsJsonPrimitive();
-                        if (primitive.isNumber()) {
-                            modifiersMap.put(entry.getKey(), primitive.getAsDouble());
-                        } else if (primitive.isString()) {
-                            modifiersMap.put(entry.getKey(), primitive.getAsString());
-                        } else if (primitive.isBoolean()) {
-                            modifiersMap.put(entry.getKey(), primitive.getAsBoolean());
+                        JsonPrimitive pri = entry.getValue().getAsJsonPrimitive();
+                        if (pri.isNumber()) {
+                            modifiersMap.put(entry.getKey(), pri.getAsDouble());
+                        } else if (pri.isString()) {
+                            modifiersMap.put(entry.getKey(), pri.getAsString());
+                        } else if (pri.isBoolean()) {
+                            modifiersMap.put(entry.getKey(), pri.getAsBoolean());
                         }
                     }
                 }
-                addon.removeAbilitiesFromCastMode(cast);
                 addon.addAbilities(id, cast, modifiersMap);
                 e.setCurrentItem(addon.getItem());
             }

@@ -1,6 +1,9 @@
 package kr.apo2073.mmoitemsADDON.event;
 
-import com.google.gson.*;
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import io.lumine.mythic.lib.api.item.NBTItem;
 import kr.apo2073.mmoitemsADDON.MMoItemsADDON;
 import kr.apo2073.mmoitemsADDON.util.MMoAddon;
@@ -17,7 +20,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
 
 import java.util.HashMap;
-import java.util.Map;
 import java.util.Objects;
 
 public class SkillBookEQUIPevent implements Listener {
@@ -42,30 +44,22 @@ public class SkillBookEQUIPevent implements Listener {
         JsonArray json = new Gson().fromJson(key, JsonArray.class);
         try {
             for (JsonElement element : json) {
-
-                for (JsonElement je: addon.getAbilitiesJson())
-                    if (je.getAsJsonObject().get("CastMode")
-                            .equals(element.getAsJsonObject().get("CastMode")))
-                        addon.removeAbilities(je.getAsJsonObject()
+                if (addon.getAbilitiesJson()!=null) {
+                    for (JsonElement je: addon.getAbilitiesJson())
+                        if (je.getAsJsonObject().get("CastMode")
+                                .equals(element.getAsJsonObject().get("CastMode"))
+                        ) addon.removeAbilities(je.getAsJsonObject()
                                 .get("Id").getAsString());
+                }
 
                 JsonObject object = element.getAsJsonObject();
                 String id = object.get("Id").getAsString();
                 String cast = object.get("CastMode").getAsString();
                 HashMap<String, Object> modifiersMap = new HashMap<>();
                 JsonObject modJson = object.getAsJsonObject("Modifiers");
-                for (Map.Entry<String, JsonElement> entry : modJson.entrySet()) {
-                    if (entry.getValue().isJsonPrimitive()) {
-                        JsonPrimitive pri = entry.getValue().getAsJsonPrimitive();
-                        if (pri.isNumber()) {
-                            modifiersMap.put(entry.getKey(), pri.getAsDouble());
-                        } else if (pri.isString()) {
-                            modifiersMap.put(entry.getKey(), pri.getAsString());
-                        } else if (pri.isBoolean()) {
-                            modifiersMap.put(entry.getKey(), pri.getAsBoolean());
-                        }
-                    }
-                }
+                modJson.entrySet().forEach(entry-> {
+                    modifiersMap.put(entry.getKey(), entry.getValue().getAsDouble());
+                });
                 addon.addAbilities(id, cast, modifiersMap);
                 e.setCurrentItem(addon.getItem());
             }
@@ -74,6 +68,7 @@ public class SkillBookEQUIPevent implements Listener {
             player.updateInventory();
 
         } catch (Exception ex) {
+            ex.printStackTrace();
             player.sendMessage(Component.text(ex.getMessage()).color(NamedTextColor.RED));
         }
     }

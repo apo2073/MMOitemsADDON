@@ -11,7 +11,6 @@ import kr.apo2073.mmoitemsADDON.util.PapiRg;
 import kr.apo2073.mmoitemsADDON.util.SkillBookGUI;
 import kr.apo2073.mmoitemsADDON.util.skript.SkriptGetBook;
 import kr.apo2073.mmoitemsADDON.util.skript.SkriptGetID;
-import me.clip.placeholderapi.PlaceholderAPIPlugin;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -37,9 +36,11 @@ public class MMoItemsADDON extends JavaPlugin {
                 .resistTabExecutor("스킬북", new getSkillBookCmd())
                 .resistCommandExecutor("스킬북추출", new getSkillBookFromItem());
         if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) new PapiRg().register();
-        addons=Skript.registerAddon(this);
-        new SkriptGetBook();
-        new SkriptGetID();
+        if (Bukkit.getPluginManager().getPlugin("Skript") != null) {
+            addons = Skript.registerAddon(this);
+            new SkriptGetBook();
+            new SkriptGetID();
+        }
     }
 
     @Override

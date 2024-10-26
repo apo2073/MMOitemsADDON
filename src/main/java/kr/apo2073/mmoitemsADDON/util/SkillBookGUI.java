@@ -56,12 +56,12 @@ public class SkillBookGUI implements Listener {
                 .build());
         inv.setItem(33, new ItemBuilder(new ItemStack(Material.SPLASH_POTION))
                 .setDisplayName("§bduration")
-                .setLore(List.of("0", "§c[ BUG ]"))
+                .setLore(List.of("0"))
                 .addItemFlag(ItemFlag.HIDE_ITEM_SPECIFICS)
                 .build());
         inv.setItem(34, new ItemBuilder(new ItemStack(Material.BREWING_STAND))
                 .setDisplayName("§bextra")
-                .setLore(List.of("0", "§c[ BUG ]"))
+                .setLore(List.of("0"))
                 .build());
         inv.setItem(41, new ItemBuilder(new ItemStack(Material.HEART_OF_THE_SEA))
                 .setDisplayName("§bradius")
@@ -69,7 +69,7 @@ public class SkillBookGUI implements Listener {
                 .build());
         inv.setItem(42, new ItemBuilder(new ItemStack(Material.IRON_SWORD))
                 .setDisplayName("§bdamage")
-                .setLore(List.of("0", "§c[ BUG ]"))
+                .setLore(List.of("0"))
                 .build());
         inv.setItem(49, new ItemBuilder(new ItemStack(Material.LIME_STAINED_GLASS_PANE))
                 .setDisplayName("§aDone")
@@ -86,40 +86,36 @@ public class SkillBookGUI implements Listener {
         e.setCancelled(true);
 
         switch (clicked.getType()) {
-            case LAPIS_LAZULI, RABBIT_FOOT, CLOCK, POTION, HEART_OF_THE_SEA -> {
-                if (clicked.getItemMeta() == null || clicked.getItemMeta().getLore() == null || clicked.getItemMeta().getLore().isEmpty())
-                    return;
-
-                String loreValue = clicked.getItemMeta().getLore().get(0);
-                int currentValue;
-                try {
-                    currentValue = Integer.parseInt(loreValue);
-                } catch (NumberFormatException ex) {
-                    return;
-                }
-
-                if (e.getClick().isLeftClick()) {
-                    currentValue++;
-                } else if (e.getClick().isRightClick()) {
-                    currentValue--;
-                }
-
-                currentValue = Math.max(0, currentValue);
-
-                ItemMeta meta = clicked.getItemMeta();
-                meta.setLore(List.of(String.valueOf(currentValue)));
-                clicked.setItemMeta(meta);
-
-                e.getInventory().setItem(e.getSlot(), clicked);
-            }
-            case IRON_SWORD, SPLASH_POTION, BREWING_STAND  -> {
+            case LAPIS_LAZULI, RABBIT_FOOT, CLOCK, POTION, HEART_OF_THE_SEA, IRON_SWORD, SPLASH_POTION, BREWING_STAND -> {
                 if (clicked.getItemMeta() == null
                         || clicked.getItemMeta().getLore() == null
                         || clicked.getItemMeta().getLore().isEmpty())
                     return;
 
                 String loreValue = clicked.getItemMeta().getLore().get(0);
-                double currentValue;
+                if (!e.getClick().isShiftClick()){
+                    int currentValue;
+                    try {
+                        currentValue = Integer.parseInt(loreValue);
+                    } catch (NumberFormatException ex) {
+                        return;
+                    }
+
+                    if (e.getClick().isLeftClick()) {
+                        currentValue++;
+                    } else if (e.getClick().isRightClick()) {
+                        currentValue--;
+                    }
+
+                    currentValue = Math.max(0, currentValue);
+
+                    ItemMeta meta = clicked.getItemMeta();
+                    meta.setLore(List.of(String.valueOf(currentValue)));
+                    clicked.setItemMeta(meta);
+
+                    e.getInventory().setItem(e.getSlot(), clicked);
+                } else {
+                    double currentValue;
                 try {
                     currentValue = Double.parseDouble(loreValue);
                 } catch (NumberFormatException ex) {
@@ -136,10 +132,11 @@ public class SkillBookGUI implements Listener {
                 currentValue = Math.round(currentValue * 10.0) / 10.0;
 
                 ItemMeta meta = clicked.getItemMeta();
-                meta.setLore(List.of(String.format("%.1f", currentValue), "§c[ BUG ]"));
+                meta.setLore(List.of(String.format("%.1f", currentValue)));
                 clicked.setItemMeta(meta);
 
                 e.getInventory().setItem(e.getSlot(), clicked);
+                }
             }
             case LIME_STAINED_GLASS_PANE -> {
                 MMoAddon addon=new MMoAddon(player);

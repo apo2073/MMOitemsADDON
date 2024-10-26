@@ -1,40 +1,43 @@
 package kr.apo2073.mmoitemsADDON.util;
 
 import com.google.gson.*;
-import io.lumine.mythic.api.MythicPlugin;
-import io.lumine.mythic.api.mobs.MythicMob;
+import io.lumine.mythic.api.skills.Skill;
+import io.lumine.mythic.api.skills.SkillManager;
+import io.lumine.mythic.bukkit.MythicBukkit;
 import io.lumine.mythic.lib.MythicLib;
+import io.lumine.mythic.lib.api.item.ItemTag;
 import io.lumine.mythic.lib.api.item.NBTItem;
-import io.lumine.mythic.lib.manager.SkillManager;
-import io.lumine.mythic.lib.skill.Skill;
 import io.lumine.mythic.lib.skill.SkillMetadata;
-import io.lumine.mythic.lib.skill.handler.MythicMobsSkillHandler;
 import io.lumine.mythic.lib.skill.handler.SkillHandler;
-import jdk.jfr.Description;
-import jdk.jfr.Experimental;
+import io.lumine.mythic.lib.skill.result.SkillResult;
+import io.lumine.mythic.lib.skill.trigger.TriggerType;
 import kr.apo2073.mmoitemsADDON.MMoItemsADDON;
 import kr.apo2073.mmoitemsADDON.exception.TheresNoItemIdiot;
 import kr.apo2073.mmoitemsADDON.exception.WhereIsABILITIES;
-import net.Indyuce.mmocore.api.MMOCoreAPI;
 import net.Indyuce.mmoitems.ItemStats;
+import net.Indyuce.mmoitems.MMOItems;
 import net.Indyuce.mmoitems.api.item.mmoitem.LiveMMOItem;
-import net.Indyuce.mmoitems.api.player.PlayerData;
-import net.Indyuce.mmoitems.comp.mmocore.MMOCoreHook;
+import net.Indyuce.mmoitems.skill.RegisteredSkill;
 import net.Indyuce.mmoitems.stat.data.AbilityData;
 import net.Indyuce.mmoitems.stat.data.AbilityListData;
+import net.Indyuce.mmoitems.stat.data.type.StatData;
 import org.bukkit.ChatColor;
+import org.bukkit.NamespacedKey;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.persistence.PersistentDataType;
+import org.jetbrains.annotations.NotNull;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 public class MMoAddon {
     private MMoItemsADDON mma=MMoItemsADDON.plugin;
     private Player player;
     private JsonArray abilitiesJson;
     private ItemStack item;
+    private ItemMeta meta;
     private NBTItem nbtItem;
     private LiveMMOItem liveMMOItem;
 
@@ -42,6 +45,7 @@ public class MMoAddon {
 
     public MMoAddon(ItemStack items) {
         this.item = items;
+        this.meta = items.getItemMeta();
         this.nbtItem = NBTItem.get(items);
         String ab = nbtItem.getString("MMOITEMS_ABILITY");
         this.abilitiesJson = new Gson().fromJson(ab, JsonArray.class);
@@ -57,6 +61,7 @@ public class MMoAddon {
     public ItemStack getItem() { return item; }
     public void setItem(ItemStack item) {
         this.item=item;
+        this.meta = item.getItemMeta();
         this.nbtItem=NBTItem.get(item);
         this.abilitiesJson = JsonParser.parseString(this.nbtItem.getString("MMOITEMS_ABILITY")).getAsJsonArray();
         if (nbtItem.getType()==null) return;
@@ -79,7 +84,7 @@ public class MMoAddon {
     public String getTags() {
         if (item==null || nbtItem==null)
             throw new TheresNoItemIdiot();
-        return nbtItem.getTags().toString();
+        return String.join(", ", nbtItem.getTags());
     }
     public String getTagsValue(String tags) { return nbtItem.getString(tags); }
 
@@ -158,58 +163,43 @@ public class MMoAddon {
             }).orElse(new HashMap<>());
     }
 
-    @Deprecated
-    @Description("불완전")
-    public void addAbilities(String json) {
-        if (liveMMOItem == null || liveMMOItem.getData(ItemStats.ABILITIES).isEmpty()) return;
-        JsonElement element = new Gson().fromJson(json, JsonElement.class);
-        AbilityListData abilityData = (AbilityListData) liveMMOItem.getData(ItemStats.ABILITIES);
-        if (element.isJsonArray()) {
-            for (JsonElement abilityElement : element.getAsJsonArray()) {
-                abilityData.add(new AbilityData(abilityElement.getAsJsonObject()));
-            }
-        } else {
-            abilityData.add(new AbilityData(element.getAsJsonObject()));
-        }
-        liveMMOItem.replaceData(ItemStats.ABILITIES, abilityData);
-        this.item = liveMMOItem.newBuilder().build();
-        this.nbtItem = NBTItem.get(this.item);
-        this.liveMMOItem = new LiveMMOItem(nbtItem);
-    }
-
     @SafeVarargs
     public final void addAbilities(String skill, String castMode, HashMap<String, Object>... value) {
         try {
             if (liveMMOItem == null) return;
-            AbilityListData abilityData;
-            if (liveMMOItem.hasData(ItemStats.ABILITIES)) abilityData = ((AbilityListData) liveMMOItem.getData(ItemStats.ABILITIES));
-            else abilityData= new AbilityListData();
-            JsonObject modifiers = new JsonObject();
-            for (HashMap<String, Object> map : value) {
-                for (Map.Entry<String, Object> entry : map.entrySet()) {
-                    if (entry==null || entry.getValue()==null || entry.getKey()==null) continue;
-                    modifiers.addProperty(entry.getKey(), (Double) entry.getValue());
-                }
+            AbilityListData abilityData = liveMMOItem.hasData(ItemStats.ABILITIES)
+                    ? (AbilityListData) liveMMOItem.getData(ItemStats.ABILITIES)
+                    : new AbilityListData();
+
+            if (MMOItems.plugin.getSkills().getSkill(skill)!=null) {
+                JsonObject modifiers = new JsonObject();
+                Arrays.stream(value)
+                        .flatMap(map -> map.entrySet().stream())
+                        .filter(entry -> entry != null && entry.getKey() != null && entry.getValue() != null)
+                        .forEach(entry -> modifiers.addProperty(entry.getKey(), (Double) entry.getValue()));
+                JsonObject skillJson = new JsonObject();
+                skillJson.addProperty("Id", skill);
+                skillJson.addProperty("CastMode", castMode);
+                skillJson.add("Modifiers", modifiers);
+                AbilityData data = new AbilityData(skillJson);
+                abilityData.add(data);
+
+                liveMMOItem.setData(ItemStats.ABILITIES, abilityData);
+                this.item = liveMMOItem.newBuilder().build();
+                this.nbtItem = NBTItem.get(this.item);
+                this.liveMMOItem = new LiveMMOItem(nbtItem);
+            } else {
+                MythicLib mythicLib=MythicLib.inst();
+                MythicBukkit mythicBukkit=MythicBukkit.inst();
+                SkillManager manager=mythicBukkit.getSkillManager();
+                Optional<Skill> skills=manager.getSkill(skill);
+                if (skills.isEmpty()) return;
+                liveMMOItem.setData(ItemStats.ABILITIES, abilityData);
+                liveMMOItem.newBuilder().addItemTag(new ItemTag("MYTHIC_TYPE", skill));
+                this.item = liveMMOItem.newBuilder().build();
+                this.nbtItem = NBTItem.get(this.item);
+                this.liveMMOItem = new LiveMMOItem(nbtItem);
             }
-            JsonObject skillJson = new JsonObject();
-
-            skillJson.addProperty("Id", skill);
-            skillJson.addProperty("CastMode", castMode);
-            skillJson.add("Modifiers", modifiers);
-
-            abilityData.add(new AbilityData(skillJson));
-
-            liveMMOItem.setData(ItemStats.ABILITIES, abilityData);
-            this.item = liveMMOItem.newBuilder().build();
-            this.nbtItem = NBTItem.get(this.item);
-            this.liveMMOItem = new LiveMMOItem(nbtItem);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void addSkills(String skill) {
-        try {
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -218,16 +208,20 @@ public class MMoAddon {
     public void removeAbilities(String skillID) {
         try {
             if (liveMMOItem==null) return;
-            if (liveMMOItem.getData(ItemStats.ABILITIES).isEmpty())return;
-            AbilityListData abilityData= ((AbilityListData)liveMMOItem.getData(ItemStats.ABILITIES));
-            boolean IsRemoved= abilityData.getAbilities().removeIf(abilityData1 -> {
-                return abilityData1.getHandler().getId().equals(skillID);
-            });
-            if (!IsRemoved) return;
-            liveMMOItem.replaceData(ItemStats.ABILITIES, abilityData);
-            this.item= liveMMOItem.newBuilder().build();
-            this.nbtItem=NBTItem.get(this.item);
-            this.liveMMOItem=new LiveMMOItem(nbtItem);
+            if (MMOItems.plugin.getSkills().getSkill(skillID)!=null) {
+                if (liveMMOItem.getData(ItemStats.ABILITIES).isEmpty()) return;
+                AbilityListData abilityData = liveMMOItem.hasData(ItemStats.ABILITIES)
+                        ? (AbilityListData) liveMMOItem.getData(ItemStats.ABILITIES)
+                        : new AbilityListData();
+                boolean IsRemoved = abilityData.getAbilities().removeIf(abilityData1 -> {
+                    return abilityData1.getHandler().getId().equals(skillID);
+                });
+                if (!IsRemoved) return;
+                liveMMOItem.replaceData(ItemStats.ABILITIES, abilityData);
+                this.item = liveMMOItem.newBuilder().build();
+                this.nbtItem = NBTItem.get(this.item);
+                this.liveMMOItem = new LiveMMOItem(nbtItem);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }

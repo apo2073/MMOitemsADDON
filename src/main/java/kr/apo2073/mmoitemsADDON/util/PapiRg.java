@@ -57,7 +57,7 @@ public class PapiRg extends PlaceholderExpansion {
                 String param = params.replace("tags_", "");
                 return addon.getTagsValue(param);
             }
-            if (params.equals("tags")) addon.getNbtItem().getTags();
+            if (params.equals("tags")) addon.getTags();
         } catch (Exception e) {
             return e.getMessage();
         }

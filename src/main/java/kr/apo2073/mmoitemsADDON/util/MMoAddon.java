@@ -8,12 +8,15 @@ import io.lumine.mythic.lib.MythicLib;
 import io.lumine.mythic.lib.api.item.ItemTag;
 import io.lumine.mythic.lib.api.item.NBTItem;
 import io.lumine.mythic.lib.skill.SkillMetadata;
+import io.lumine.mythic.lib.skill.handler.MythicMobsSkillHandler;
 import io.lumine.mythic.lib.skill.handler.SkillHandler;
 import io.lumine.mythic.lib.skill.result.SkillResult;
 import io.lumine.mythic.lib.skill.trigger.TriggerType;
 import kr.apo2073.mmoitemsADDON.MMoItemsADDON;
 import kr.apo2073.mmoitemsADDON.exception.TheresNoItemIdiot;
 import kr.apo2073.mmoitemsADDON.exception.WhereIsABILITIES;
+import net.Indyuce.mmocore.MMOCore;
+import net.Indyuce.mmocore.api.MMOCoreAPI;
 import net.Indyuce.mmoitems.ItemStats;
 import net.Indyuce.mmoitems.MMOItems;
 import net.Indyuce.mmoitems.api.item.mmoitem.LiveMMOItem;
@@ -171,35 +174,46 @@ public class MMoAddon {
                     ? (AbilityListData) liveMMOItem.getData(ItemStats.ABILITIES)
                     : new AbilityListData();
 
+            AbilityData data;
+            JsonObject modifiers = new JsonObject();
+            Arrays.stream(value)
+                    .flatMap(map -> map.entrySet().stream())
+                    .filter(entry -> entry != null && entry.getKey() != null && entry.getValue() != null)
+                    .forEach(entry -> modifiers.addProperty(entry.getKey(), (Double) entry.getValue()));
             if (MMOItems.plugin.getSkills().getSkill(skill)!=null) {
-                JsonObject modifiers = new JsonObject();
-                Arrays.stream(value)
-                        .flatMap(map -> map.entrySet().stream())
-                        .filter(entry -> entry != null && entry.getKey() != null && entry.getValue() != null)
-                        .forEach(entry -> modifiers.addProperty(entry.getKey(), (Double) entry.getValue()));
                 JsonObject skillJson = new JsonObject();
                 skillJson.addProperty("Id", skill);
                 skillJson.addProperty("CastMode", castMode);
                 skillJson.add("Modifiers", modifiers);
-                AbilityData data = new AbilityData(skillJson);
-                abilityData.add(data);
-
-                liveMMOItem.setData(ItemStats.ABILITIES, abilityData);
-                this.item = liveMMOItem.newBuilder().build();
-                this.nbtItem = NBTItem.get(this.item);
-                this.liveMMOItem = new LiveMMOItem(nbtItem);
+                data = new AbilityData(
+                        MMOItems.plugin.getSkills().getSkill(skill),
+                        TriggerType.valueOf(castMode)
+                );
+                modifiers.entrySet().forEach(entry-> {
+                    data.setModifier(entry.getKey(), entry.getValue().getAsDouble());
+                });
             } else {
-                MythicLib mythicLib=MythicLib.inst();
+                MMOCore mmoCore= MMOCore.plugin;
                 MythicBukkit mythicBukkit=MythicBukkit.inst();
                 SkillManager manager=mythicBukkit.getSkillManager();
                 Optional<Skill> skills=manager.getSkill(skill);
                 if (skills.isEmpty()) return;
-                liveMMOItem.setData(ItemStats.ABILITIES, abilityData);
-                liveMMOItem.newBuilder().addItemTag(new ItemTag("MYTHIC_TYPE", skill));
-                this.item = liveMMOItem.newBuilder().build();
-                this.nbtItem = NBTItem.get(this.item);
-                this.liveMMOItem = new LiveMMOItem(nbtItem);
+                data=new AbilityData(
+                        new RegisteredSkill(mmoCore.skillManager.getSkill(skill).getHandler(),
+                                mmoCore.skillManager.getSkill(skill).getName()),
+                        TriggerType.valueOf(castMode)
+                );
+                modifiers.entrySet().forEach(entry-> {
+                    data.setModifier(entry.getKey(), entry.getValue().getAsDouble());
+                });
             }
+
+
+            abilityData.add(data);
+            liveMMOItem.setData(ItemStats.ABILITIES, abilityData);
+            this.item = liveMMOItem.newBuilder().build();
+            this.nbtItem = NBTItem.get(this.item);
+            this.liveMMOItem = new LiveMMOItem(nbtItem);
         } catch (Exception e) {
             e.printStackTrace();
         }

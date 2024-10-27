@@ -93,7 +93,7 @@ public class SkillBookGUI implements Listener {
                     return;
 
                 String loreValue = clicked.getItemMeta().getLore().get(0);
-                if (!e.getClick().isShiftClick()){
+                if (!e.getClick().isShiftClick()) {
                     int currentValue;
                     try {
                         currentValue = Integer.parseInt(loreValue);
@@ -116,26 +116,26 @@ public class SkillBookGUI implements Listener {
                     e.getInventory().setItem(e.getSlot(), clicked);
                 } else {
                     double currentValue;
-                try {
-                    currentValue = Double.parseDouble(loreValue);
-                } catch (NumberFormatException ex) {
-                    return;
-                }
+                    try {
+                        currentValue = Double.parseDouble(loreValue);
+                    } catch (NumberFormatException ex) {
+                        return;
+                    }
 
-                if (e.getClick().isLeftClick()) {
-                    currentValue += 0.1;
-                } else if (e.getClick().isRightClick()) {
-                    currentValue -= 0.1;
-                }
+                    if (e.getClick().isLeftClick()) {
+                        currentValue += 0.1;
+                    } else if (e.getClick().isRightClick()) {
+                        currentValue -= 0.1;
+                    }
 
-                currentValue = Math.max(0, currentValue);
-                currentValue = Math.round(currentValue * 10.0) / 10.0;
+                    currentValue = Math.max(0, currentValue);
+                    currentValue = Math.round(currentValue * 10.0) / 10.0;
 
-                ItemMeta meta = clicked.getItemMeta();
-                meta.setLore(List.of(String.format("%.1f", currentValue)));
-                clicked.setItemMeta(meta);
+                    ItemMeta meta = clicked.getItemMeta();
+                    meta.setLore(List.of(String.format("%.1f", currentValue)));
+                    clicked.setItemMeta(meta);
 
-                e.getInventory().setItem(e.getSlot(), clicked);
+                    e.getInventory().setItem(e.getSlot(), clicked);
                 }
             }
             case LIME_STAINED_GLASS_PANE -> {

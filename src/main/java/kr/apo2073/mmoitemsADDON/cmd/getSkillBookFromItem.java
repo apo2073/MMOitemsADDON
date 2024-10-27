@@ -23,6 +23,7 @@ public class getSkillBookFromItem implements CommandExecutor {
         MMoAddon addon=new MMoAddon(item);
         SkillBook book=new SkillBook();
         JsonArray array= addon.getAbilitiesJson();
+        if (array==null) return true;
         for (JsonElement element: array) {
             JsonObject object=element.getAsJsonObject();
             addon.removeAbilities(object.get("Id").getAsString());

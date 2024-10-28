@@ -15,7 +15,7 @@ import org.jetbrains.annotations.Nullable;
 @Experimental
 public class SkriptGetBook extends SimpleExpression<ItemStack> {
     static {
-        Skript.registerExpression(SkriptGetBook.class, ItemStack.class, ExpressionType.SIMPLE, "[skill] book of %item%");
+        Skript.registerExpression(SkriptGetBook.class, ItemStack.class, ExpressionType.SIMPLE, "[(a/the)] [skill] book of %item%");
     }
     private Expression<ItemStack> itemExpr;
     @Override

@@ -9,8 +9,10 @@ import kr.apo2073.mmoitemsADDON.cmd.getSkillBookFromItem;
 import kr.apo2073.mmoitemsADDON.event.SkillBookEQUIPevent;
 import kr.apo2073.mmoitemsADDON.util.PapiRg;
 import kr.apo2073.mmoitemsADDON.util.SkillBookGUI;
+import kr.apo2073.mmoitemsADDON.util.skript.SkriptAddABILITY;
 import kr.apo2073.mmoitemsADDON.util.skript.SkriptGetBook;
 import kr.apo2073.mmoitemsADDON.util.skript.SkriptGetID;
+import kr.apo2073.mmoitemsADDON.util.skript.SkriptRemoveABILITY;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -40,6 +42,8 @@ public class MMoItemsADDON extends JavaPlugin {
             addons = Skript.registerAddon(this);
             new SkriptGetBook();
             new SkriptGetID();
+            new SkriptAddABILITY();
+            new SkriptRemoveABILITY();
         }
     }
 

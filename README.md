@@ -1,4 +1,5 @@
 # MMOitemsADDON
+[![](https://jitpack.io/v/apo2073/MMOitemsADDON.svg)](https://jitpack.io/#apo2073/MMOitemsADDON)
 
 ---
 

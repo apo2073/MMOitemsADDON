@@ -6,6 +6,7 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -171,6 +172,7 @@ public class SkillBookGUI implements Listener {
                 ItemStack book= skillBook.getSkillBook(player, addon.getAbilityToJSon(skillID, castMode, modifiers));
                 player.closeInventory(InventoryCloseEvent.Reason.PLUGIN);
                 player.getInventory().addItem(book);
+                player.playSound(player.getLocation(), Sound.BLOCK_BEACON_ACTIVATE, 1.0f, 1.0f);
             }
         }
     }

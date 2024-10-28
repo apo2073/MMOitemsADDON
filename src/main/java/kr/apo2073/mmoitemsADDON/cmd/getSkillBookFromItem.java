@@ -6,6 +6,7 @@ import com.google.gson.JsonObject;
 import kr.apo2073.mmoitemsADDON.util.MMoAddon;
 import kr.apo2073.mmoitemsADDON.util.SkillBook;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -31,6 +32,7 @@ public class getSkillBookFromItem implements CommandExecutor {
             array1.add(object);
             player.getInventory().addItem(book.getSkillBook(player, array1));
             player.getInventory().setItemInMainHand(addon.getItem());
+            player.playSound(player.getLocation(), Sound.BLOCK_BEACON_DEACTIVATE, 1.0f, 1.0f);
         }
         return true;
     }

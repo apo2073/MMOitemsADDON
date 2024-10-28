@@ -11,6 +11,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
@@ -29,8 +30,19 @@ public class SkillBookEQUIPevent implements Listener {
         ItemStack book = e.getCursor();
         ItemStack item = e.getCurrentItem();
 
+        if (e.isRightClick()) {
+            if (item.getType()!=Material.ENCHANTED_BOOK
+            || Objects.requireNonNull(
+                        book.getItemMeta()
+                                .displayName()).contains(Component.text("스킬북"))
+            ) return;
+                String key = item.getItemMeta().getPersistentDataContainer().get(
+                    new NamespacedKey(MMoItemsADDON.plugin, "json"), PersistentDataType.STRING
+                );
+                MMoItemsADDON.plugin.getLogger().warning(" * SKILL-BOOK JSON : "+key);
+        } // for test
         if (book.getType() != Material.ENCHANTED_BOOK
-                || Objects.requireNonNull(
+                || !Objects.requireNonNull(
                         book.getItemMeta()
                                 .displayName()).contains(Component.text("스킬북"))
                 || item == null || item.getType() == Material.AIR) return;
@@ -62,6 +74,7 @@ public class SkillBookEQUIPevent implements Listener {
                 });
                 addon.addAbilities(id, cast, modifiersMap);
                 e.setCurrentItem(addon.getItem());
+                player.playSound(player.getLocation(), Sound.BLOCK_ENCHANTMENT_TABLE_USE, 1.0f, 1.0f);
             }
             e.setResult(Event.Result.DENY);
             e.setCursor(null);

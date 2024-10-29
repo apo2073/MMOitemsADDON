@@ -1,8 +1,10 @@
 package kr.apo2073.mmoitemsADDON.util;
 
 import kr.apo2073.lib.Items.ItemBuilder;
+import kr.apo2073.mmoitemsADDON.event.AnvilGUI;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -12,6 +14,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
@@ -21,14 +24,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 
+import static org.bukkit.Material.NAME_TAG;
+import static org.bukkit.Material.PAPER;
+
 public class SkillBookGUI implements Listener {
     private Inventory inv;
     public Inventory getInv(String skill, String castMode) {
-        inv = Bukkit.createInventory(null, 9 * 6, "§6Skill §fBook Maker");
+        inv = Bukkit.createInventory(null, 9 * 6, Component.text("§6Skill §fBook"));
         inv.setItem(4, new ItemBuilder(new ItemStack(Material.ENCHANTED_BOOK))
                 .setDisplayName("§l§d스킬북 §b[ "+skill+" §b]")
                 .build());
-        inv.setItem(19, new ItemBuilder(new ItemStack(Material.PAPER))
+        inv.setItem(19, new ItemBuilder(new ItemStack(PAPER))
                 .setDisplayName("Skill ID")
                 .setDescription(List.of(Component.text(skill)
                         .color(NamedTextColor.LIGHT_PURPLE).decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE)))
@@ -80,13 +86,37 @@ public class SkillBookGUI implements Listener {
 
     @EventHandler
     public void onClick(InventoryClickEvent e) {
-        if (!e.getView().getOriginalTitle().contains("§6Skill §fBook Maker")) return;
+        if (!e.getView().getOriginalTitle().contains("§6Skill §fBook")) return;
         Player player = (Player) e.getWhoClicked();
         ItemStack clicked = e.getCurrentItem();
         if (clicked == null || clicked.getType() == Material.AIR) return;
         e.setCancelled(true);
 
         switch (clicked.getType()) {
+            /*case PAPER -> {
+                player.closeInventory();
+                Inventory inv=Bukkit.createInventory(null, InventoryType.ANVIL, Component.text("Skill Name"));
+                ItemStack skillName=new ItemBuilder(new ItemStack(NAME_TAG))
+                        .setItemName(Component.text("Enter Here"))
+                        .setCustomModelData(999999)
+                        .addItemFlag(ItemFlag.HIDE_ITEM_SPECIFICS)
+                        .build();
+                inv.setItem(0, skillName);
+                inv.setItem(2, skillName);
+                player.openInventory(inv);
+            }
+            case STICK -> {
+                player.closeInventory();
+                Inventory inv=Bukkit.createInventory(null, InventoryType.ANVIL, Component.text("CastMode"));
+                ItemStack skillName=new ItemBuilder(new ItemStack(NAME_TAG))
+                        .setItemName(Component.text("Enter Here"))
+                        .setCustomModelData(999999)
+                        .addItemFlag(ItemFlag.HIDE_ITEM_SPECIFICS)
+                        .build();
+                inv.setItem(0, skillName);
+                inv.setItem(2, skillName);
+                player.openInventory(inv);
+            }*/
             case LAPIS_LAZULI, RABBIT_FOOT, CLOCK, POTION, HEART_OF_THE_SEA, IRON_SWORD, SPLASH_POTION, BREWING_STAND -> {
                 if (clicked.getItemMeta() == null
                         || clicked.getItemMeta().getLore() == null
@@ -124,22 +154,25 @@ public class SkillBookGUI implements Listener {
                     }
 
                     if (e.getClick().isLeftClick()) {
-                        currentValue += 0.1;
+                        currentValue += .5;
                     } else if (e.getClick().isRightClick()) {
-                        currentValue -= 0.1;
+                        currentValue -= .5;
                     }
 
                     currentValue = Math.max(0, currentValue);
                     currentValue = Math.round(currentValue * 10.0) / 10.0;
 
                     ItemMeta meta = clicked.getItemMeta();
-                    meta.setLore(List.of(String.format("%.1f", currentValue)));
+                    meta.lore(List.of(Component.text(String.format("%.1f", currentValue)).color(NamedTextColor.WHITE)));
                     clicked.setItemMeta(meta);
 
                     e.getInventory().setItem(e.getSlot(), clicked);
                 }
             }
             case LIME_STAINED_GLASS_PANE -> {
+                AnvilGUI gui=new AnvilGUI();
+                gui.skill.put(player, "none");
+                gui.castmode.put(player, "none");
                 MMoAddon addon=new MMoAddon(player);
                 String skillID= Objects.requireNonNull(e.getInventory().getItem(19)).getItemMeta().getLore().get(0).replace("§d", "");
                 String castMode= Objects.requireNonNull(e.getInventory().getItem(20)).getItemMeta().getLore().get(0).replace("§a", "");
@@ -175,5 +208,14 @@ public class SkillBookGUI implements Listener {
                 player.playSound(player.getLocation(), Sound.BLOCK_BEACON_ACTIVATE, 1.0f, 1.0f);
             }
         }
+    }
+
+    @EventHandler
+    public void onClose(InventoryCloseEvent e) {
+        if (!e.getView().getOriginalTitle().contains("§6Skill §fBook")) return;
+        Player player = (Player) e.getPlayer();
+        AnvilGUI gui=new AnvilGUI();
+        gui.skill.put(player, "none");
+        gui.castmode.put(player, "none");
     }
 }

@@ -1,12 +1,12 @@
-package kr.apo2073.mmoitemsADDON.event;
+package kr.apo2073.mmoAddon.event;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import io.lumine.mythic.lib.api.item.NBTItem;
-import kr.apo2073.mmoitemsADDON.MMoItemsADDON;
-import kr.apo2073.mmoitemsADDON.util.MMoAddon;
+import kr.apo2073.mmoAddon.MMOAddons;
+import kr.apo2073.mmoAddon.util.MMoAddon;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Material;
@@ -30,24 +30,13 @@ public class SkillBookEQUIPevent implements Listener {
         ItemStack book = e.getCursor();
         ItemStack item = e.getCurrentItem();
 
-        if (e.isRightClick()) {
-            if (item.getType()!=Material.ENCHANTED_BOOK
-            || Objects.requireNonNull(
-                        book.getItemMeta()
-                                .displayName()).contains(Component.text("스킬북"))
-            ) return;
-                String key = item.getItemMeta().getPersistentDataContainer().get(
-                    new NamespacedKey(MMoItemsADDON.plugin, "json"), PersistentDataType.STRING
-                );
-                MMoItemsADDON.plugin.getLogger().warning(" * SKILL-BOOK JSON : "+key);
-        } // for test
         if (book.getType() != Material.ENCHANTED_BOOK
                 || !Objects.requireNonNull(
                         book.getItemMeta()
-                                .displayName()).contains(Component.text("스킬북"))
+                                .getDisplayName()).contains("스킬북")
                 || item == null || item.getType() == Material.AIR) return;
         String key = book.getItemMeta().getPersistentDataContainer().get(
-                new NamespacedKey(MMoItemsADDON.plugin, "json"), PersistentDataType.STRING
+                new NamespacedKey(MMOAddons.plugin, "json"), PersistentDataType.STRING
         );
         if (NBTItem.get(item).getType()==null) return;
         if (key == null) return;

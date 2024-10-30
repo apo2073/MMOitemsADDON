@@ -1,4 +1,4 @@
-package kr.apo2073.mmoitemsADDON.util.skript;
+package kr.apo2073.mmoAddon.util.skript;
 
 import ch.njol.skript.Skript;
 import ch.njol.skript.lang.Expression;
@@ -6,17 +6,20 @@ import ch.njol.skript.lang.ExpressionType;
 import ch.njol.skript.lang.SkriptParser;
 import ch.njol.skript.lang.util.SimpleExpression;
 import ch.njol.util.Kleenean;
-import kr.apo2073.mmoitemsADDON.util.MMoAddon;
+import kr.apo2073.mmoAddon.util.MMoAddon;
 import org.bukkit.event.Event;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
+/**
+* @usage give remove ability "FIREBOLT" on player's tool to player
+*/
 public class SkriptRemoveABILITY extends SimpleExpression<ItemStack> {
     private Expression<String> skillExpr;
     private Expression<ItemStack> itemExpr;
     static {
         Skript.registerExpression(SkriptRemoveABILITY.class, ItemStack.class, ExpressionType.SIMPLE,
-                "remove (ability/skill) %string% on %itemstack%");
+                "remove (ability|skill) %string% (on|from) %itemstack%");
     }
     @Nullable
     @Override
@@ -34,7 +37,7 @@ public class SkriptRemoveABILITY extends SimpleExpression<ItemStack> {
 
     @Override
     public boolean isSingle() {
-        return false;
+        return true;
     }
 
     @Override
@@ -50,7 +53,7 @@ public class SkriptRemoveABILITY extends SimpleExpression<ItemStack> {
     @Override
     public boolean init(Expression<?>[] expressions, int matchedPattern, Kleenean isDelayed, SkriptParser.ParseResult parseResult) {
         skillExpr = (Expression<String>) expressions[0];
-        itemExpr = (Expression<ItemStack>) expressions[2];
+        itemExpr = (Expression<ItemStack>) expressions[1];
         return true;
     }
 }

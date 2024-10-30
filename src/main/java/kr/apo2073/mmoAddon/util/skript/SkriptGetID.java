@@ -1,4 +1,4 @@
-package kr.apo2073.mmoitemsADDON.util.skript;
+package kr.apo2073.mmoAddon.util.skript;
 
 import ch.njol.skript.Skript;
 import ch.njol.skript.lang.Expression;
@@ -6,16 +6,18 @@ import ch.njol.skript.lang.ExpressionType;
 import ch.njol.skript.lang.SkriptParser;
 import ch.njol.skript.lang.util.SimpleExpression;
 import ch.njol.util.Kleenean;
-import jdk.jfr.Experimental;
-import kr.apo2073.mmoitemsADDON.util.MMoAddon;
+import kr.apo2073.mmoAddon.util.MMoAddon;
 import org.bukkit.event.Event;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
-@Experimental
+/**
+* @usage [(a|the)] id of %itemstack%
+*/
+
 public class SkriptGetID extends SimpleExpression<String> {
     static {
-        Skript.registerExpression(SkriptGetID.class, String.class, ExpressionType.COMBINED, "[(a/the)] id of %item%");
+        Skript.registerExpression(SkriptGetID.class, String.class, ExpressionType.COMBINED, "[(a|the)] id of %itemstack%");
     }
     private Expression<ItemStack> itemExpr;
     @Override

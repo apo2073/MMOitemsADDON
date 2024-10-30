@@ -1,14 +1,11 @@
-package kr.apo2073.mmoitemsADDON.event;
+package kr.apo2073.mmoAddon.event;
 
-import jdk.jfr.Experimental;
-import kr.apo2073.mmoitemsADDON.util.SkillBookGUI;
+import kr.apo2073.mmoAddon.util.SkillBookGUI;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryType;
-import org.bukkit.inventory.AnvilInventory;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 

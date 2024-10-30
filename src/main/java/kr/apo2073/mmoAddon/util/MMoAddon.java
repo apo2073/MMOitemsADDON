@@ -1,4 +1,4 @@
-package kr.apo2073.mmoitemsADDON.util;
+package kr.apo2073.mmoAddon.util;
 
 import com.google.gson.*;
 import io.lumine.mythic.api.skills.Skill;
@@ -6,9 +6,9 @@ import io.lumine.mythic.api.skills.SkillManager;
 import io.lumine.mythic.bukkit.MythicBukkit;
 import io.lumine.mythic.lib.api.item.NBTItem;
 import io.lumine.mythic.lib.skill.trigger.TriggerType;
-import kr.apo2073.mmoitemsADDON.MMoItemsADDON;
-import kr.apo2073.mmoitemsADDON.exception.TheresNoItemIdiot;
-import kr.apo2073.mmoitemsADDON.exception.WhereIsABILITIES;
+import kr.apo2073.mmoAddon.MMOAddons;
+import kr.apo2073.mmoAddon.exception.TheresNoItemIdiot;
+import kr.apo2073.mmoAddon.exception.WhereIsABILITIES;
 import net.Indyuce.mmocore.MMOCore;
 import net.Indyuce.mmoitems.ItemStats;
 import net.Indyuce.mmoitems.MMOItems;
@@ -27,7 +27,7 @@ import java.util.Map;
 import java.util.Optional;
 
 public class MMoAddon {
-    private MMoItemsADDON mma=MMoItemsADDON.plugin;
+    private MMOAddons mma= MMOAddons.plugin;
     private Player player;
     private JsonArray abilitiesJson;
     private ItemStack item;
@@ -129,9 +129,9 @@ public class MMoAddon {
                 modifiers.addProperty(entry.getKey(), entry.getValue().toString());
             }
         }
+        json.add("Modifiers", modifiers);
         json.addProperty("Id", skill);
         json.addProperty("CastMode", castMode);
-        json.add("Modifiers", modifiers);
 
         JsonArray array=new JsonArray();
         array.add(json);
@@ -185,7 +185,9 @@ public class MMoAddon {
                 });
             } else {
                 MMOCore mmoCore= MMOCore.plugin;
+                if (mmoCore==null) return;
                 MythicBukkit mythicBukkit=MythicBukkit.inst();
+                if (mythicBukkit==null) return;
                 SkillManager manager=mythicBukkit.getSkillManager();
                 Optional<Skill> skills=manager.getSkill(skill);
                 if (skills.isEmpty()) return;
@@ -198,7 +200,6 @@ public class MMoAddon {
                     data.setModifier(entry.getKey(), entry.getValue().getAsDouble());
                 });
             }
-
 
             abilityData.add(data);
             liveMMOItem.setData(ItemStats.ABILITIES, abilityData);
@@ -218,7 +219,7 @@ public class MMoAddon {
                 AbilityListData abilityData = liveMMOItem.hasData(ItemStats.ABILITIES)
                         ? (AbilityListData) liveMMOItem.getData(ItemStats.ABILITIES)
                         : new AbilityListData();
-                boolean IsRemoved = abilityData.getAbilities().removeIf(abilityData1 -> {
+                boolean IsRemoved = abilityData.getAbilities().removeIf(abilityData1 -> { //221
                     return abilityData1.getHandler().getId().equals(skillID);
                 });
                 if (!IsRemoved) return;

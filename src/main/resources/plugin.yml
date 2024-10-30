@@ -1,12 +1,14 @@
-name: MMOItemsADDON
+name: MMOAddon
 version: '1.1'
-main: kr.apo2073.mmoitemsADDON.MMoItemsADDON
+main: kr.apo2073.mmoAddon.MMOAddons
 api-version: '1.20'
 authors: [ 아포칼립스 ]
 depend: [ApoLib,  MythicLib, MMOItems]
 softdepend:
   - PlaceHolder
   - Skript
+  - MMOCore
+  - MythicMobs
 commands:
   getSkill:
   스킬북:

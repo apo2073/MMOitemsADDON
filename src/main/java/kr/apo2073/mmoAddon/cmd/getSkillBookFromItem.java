@@ -1,10 +1,10 @@
-package kr.apo2073.mmoitemsADDON.cmd;
+package kr.apo2073.mmoAddon.cmd;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import kr.apo2073.mmoitemsADDON.util.MMoAddon;
-import kr.apo2073.mmoitemsADDON.util.SkillBook;
+import kr.apo2073.mmoAddon.util.MMoAddon;
+import kr.apo2073.mmoAddon.util.SkillBook;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.command.Command;

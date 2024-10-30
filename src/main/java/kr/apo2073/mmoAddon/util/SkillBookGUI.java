@@ -1,10 +1,9 @@
-package kr.apo2073.mmoitemsADDON.util;
+package kr.apo2073.mmoAddon.util;
 
 import kr.apo2073.lib.Items.ItemBuilder;
-import kr.apo2073.mmoitemsADDON.event.AnvilGUI;
+import kr.apo2073.mmoAddon.event.AnvilGUI;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
-import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -14,7 +13,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
-import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
@@ -24,7 +22,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 
-import static org.bukkit.Material.NAME_TAG;
 import static org.bukkit.Material.PAPER;
 
 public class SkillBookGUI implements Listener {

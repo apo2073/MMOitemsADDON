@@ -1,0 +1,5 @@
+#
+# 스킬북 마다 커스텀모델데이터 설정
+#
+skillbook:
+  FROZEN_AURA: 32

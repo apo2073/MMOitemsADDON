@@ -14,11 +14,11 @@ afterEvaluate {
             register<MavenPublication>("release") {
                 from(components["java"])
                 groupId = "com.github.apo2073"
-                artifactId = "MMOItemsADDON"
+                artifactId = "MMOAddon"
                 version = "1.0"
 
                 pom {
-                    name.set("MMOItemsADDON")
+                    name.set("MMOAddon")
                     description.set("")
                 }
             }
@@ -50,9 +50,8 @@ dependencies {
 
     implementation("io.lumine:MythicLib-dist:1.7.1-SNAPSHOT")
     compileOnly("io.lumine:Mythic-Dist:5.4.0")
-    implementation("net.Indyuce:MMOItems-API:6.10-SNAPSHOT")
+    implementation("net.Indyuce:MMOItems-API:6.9.5-SNAPSHOT")
     compileOnly("net.Indyuce:MMOCore-API:1.13.1-SNAPSHOT")
-    //implementation(files("libs/MythicMobs-5.6.2.jar"))
 
     compileOnly("me.clip:placeholderapi:2.11.6")
 

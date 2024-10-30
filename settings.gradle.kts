@@ -1,1 +1,1 @@
-rootProject.name = "MMoitemsADDON"
+rootProject.name = "MMOAddons"

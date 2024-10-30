@@ -1,4 +1,4 @@
-package kr.apo2073.mmoitemsADDON.util;
+package kr.apo2073.mmoAddon.util;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -12,7 +12,7 @@ import java.util.Map;
 public class PapiRg extends PlaceholderExpansion {
     @Override
     public @NotNull String getIdentifier() {
-        return "mmoitem";
+        return "mmoaddon";
     }
 
     @Override
@@ -22,7 +22,7 @@ public class PapiRg extends PlaceholderExpansion {
 
     @Override
     public @NotNull String getVersion() {
-        return "1.0";
+        return "1.1";
     }
 
     @Override

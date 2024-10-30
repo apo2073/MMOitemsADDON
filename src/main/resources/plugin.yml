@@ -10,7 +10,6 @@ softdepend:
   - MMOCore
   - MythicMobs
 commands:
-  getSkill:
   스킬북:
     description: 스킬북 생성 명령어
   스킬북추출:

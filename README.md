@@ -7,7 +7,7 @@
 ### (soft)Depend
 * [ApoLib](https://github.com/apo2073/ApoLib)
 * [PlaceHolder](https://github.com/PlaceholderAPI/PlaceholderAPI)
-* [Skript(Experimental)](https://skunity.com/downloads)
+* [Skript](https://skunity.com/downloads)
 
 __how to use__
 ```gradle

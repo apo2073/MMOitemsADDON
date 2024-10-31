@@ -19,17 +19,22 @@ import org.bukkit.plugin.java.JavaPlugin;
 public class MMOAddons extends JavaPlugin {
     public static MMOAddons plugin;
     private SkriptAddon addons;
+    public boolean isDebug= getConfig().getBoolean("debug");
+
     @Override
     public void onEnable() {
         plugin=this;
+        debug("plugin enabled");
 
-        getLogger().info("  __  __ __  __  ____ _____ _");
-        getLogger().info(" |  \\/  |  \\/  |/ __ \\_   _| |");
-        getLogger().info(" | \\  / | \\  / | |  | || | | |_ ___ _ __ ___  ___");
-        getLogger().info(" | |\\/| | |\\/| | |  | || | | __/ _ \\ '_ ` _ \\/ __|");
-        getLogger().info(" | |  | | |  | | |__| || |_| ||  __/ | | | | \\__ \\");
-        getLogger().info(" |_|  |_|_|  |_|\\____/_____|\\__\\___|_| |_| |_|___/   With.아포칼립스");
+        this.getLogger().info("  __  __ __  __  ____ _____ _");
+        this.getLogger().info(" |  \\/  |  \\/  |/ __ \\_   _| |");
+        this.getLogger().info(" | \\  / | \\  / | |  | || | | |_ ___ _ __ ___  ___");
+        this.getLogger().info(" | |\\/| | |\\/| | |  | || | | __/ _ \\ '_ ` _ \\/ __|");
+        this.getLogger().info(" | |  | | |  | | |__| || |_| ||  __/ | | | | \\__ \\");
+        this.getLogger().info(" |_|  |_|_|  |_|\\____/_____|\\__\\___|_| |_| |_|___/   With.아포칼립스");
+        debug("config loaded : "+getConfig().getCurrentPath());
         saveDefaultConfig();
+        debug(this.getName()+" - "+Bukkit.getServer().getVersion());
 
         new Register(this)
                 .resistEventListener(new SkillBookEQUIPevent())
@@ -38,18 +43,32 @@ public class MMOAddons extends JavaPlugin {
                 .resistTabExecutor("스킬북", new getSkillBookCmd())
                 .resistCommandExecutor("스킬북추출", new getSkillBookFromItem());
 
-        if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) new PapiRg().register();
+        debug("Commands, Listeners Enabled");
+
+        if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null)
+            new PapiRg().register(); debug("Hooked PAPI : "+ new PapiRg().getIdentifier());
         if (Bukkit.getPluginManager().getPlugin("Skript") != null) {
             addons = Skript.registerAddon(this);
             new SkriptGetBookWith();
             new SkriptGetID();
             new SkriptAddABILITY();
             new SkriptRemoveABILITY();
+            debug("Hooked Skript : "+addons.getName());
         }
+    }
+
+    public void debug(String log) {
+        reloadConfig();this.reloadConfig();
+        if (isDebug) Bukkit.getLogger().warning("[ MMOAddon DEBUG ] "+log);
+    }
+
+    @Override
+    public void onLoad() {
+        debug("plugin loaded");
     }
 
     @Override
     public void onDisable() {
-        getLogger().warning("MMOAddons disabled");
+        debug("plugin disabled");
     }
 }

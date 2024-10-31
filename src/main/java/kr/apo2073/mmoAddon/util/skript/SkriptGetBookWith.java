@@ -17,7 +17,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.HashMap;
 
 /**
-* @usage give a skill book of "FROZEN_AURA" on "RIGHT_CLICK" with modifier "cooldown: 1.0" to player
+* @usage : give a skill book of "FROZEN_AURA" on "RIGHT_CLICK" with modifier "cooldown: 1.0" to player
 */
 public class SkriptGetBookWith extends SimpleExpression<ItemStack> {
     private Expression<String> skillExpr;

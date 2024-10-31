@@ -3,6 +3,7 @@ version: '1.1'
 main: kr.apo2073.mmoAddon.MMOAddons
 api-version: '1.20'
 authors: [ 아포칼립스 ]
+prefix: "MMOAddon"
 depend: [ApoLib,  MythicLib, MMOItems]
 softdepend:
   - PlaceHolder
@@ -16,16 +17,16 @@ commands:
     description: 스킬북 추출 명령어
 
 permissions:
-  mmoitems.*:
+  mmoaddon.*:
     children:
-      mmoitems.skillbook: false
-      mmoitems.magic: false
-      mmoitems.skillbookO: false
+      mmoaddon.skillbook: false
+      mmoaddon.magic: false
+      mmoaddon.skillbookO: false
 
 
-  mmoitems.skillbook:
+  mmoaddon.skillbook:
     default: op
-  mmoitems.magic:
+  mmoaddon.magic:
     default: op
-  mmoitems.skillbookO:
+  mmoaddon.skillbookO:
     default: op

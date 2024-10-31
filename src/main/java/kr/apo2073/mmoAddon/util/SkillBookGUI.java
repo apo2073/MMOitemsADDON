@@ -1,6 +1,7 @@
 package kr.apo2073.mmoAddon.util;
 
 import kr.apo2073.lib.Items.ItemBuilder;
+import kr.apo2073.mmoAddon.MMOAddons;
 import kr.apo2073.mmoAddon.event.AnvilGUI;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -26,6 +27,7 @@ import static org.bukkit.Material.PAPER;
 
 public class SkillBookGUI implements Listener {
     private Inventory inv;
+    private MMOAddons mma=MMOAddons.plugin;
     public Inventory getInv(String skill, String castMode) {
         inv = Bukkit.createInventory(null, 9 * 6, Component.text("§6Skill §fBook"));
         inv.setItem(4, new ItemBuilder(new ItemStack(Material.ENCHANTED_BOOK))
@@ -78,6 +80,7 @@ public class SkillBookGUI implements Listener {
         inv.setItem(49, new ItemBuilder(new ItemStack(Material.LIME_STAINED_GLASS_PANE))
                 .setDisplayName("§aDone")
                 .build());
+        mma.debug("Skill Book setting GUI called");
         return inv;
     }
 
@@ -189,6 +192,7 @@ public class SkillBookGUI implements Listener {
                             } catch (NumberFormatException ex) {
                                 continue;
                             }
+                            mma.debug("skill added : "+itemName+loreValue);
 
                             modifiers.put(itemName.replace("§b", ""), loreValue);
                         }
@@ -203,16 +207,17 @@ public class SkillBookGUI implements Listener {
                 player.closeInventory(InventoryCloseEvent.Reason.PLUGIN);
                 player.getInventory().addItem(book);
                 player.playSound(player.getLocation(), Sound.BLOCK_BEACON_ACTIVATE, 1.0f, 1.0f);
+                mma.debug("skill book given to player");
             }
         }
     }
 
-    @EventHandler
+    /*@EventHandler
     public void onClose(InventoryCloseEvent e) {
         if (!e.getView().getOriginalTitle().contains("§6Skill §fBook")) return;
         Player player = (Player) e.getPlayer();
         AnvilGUI gui=new AnvilGUI();
         gui.skill.put(player, "none");
         gui.castmode.put(player, "none");
-    }
+    }*/
 }

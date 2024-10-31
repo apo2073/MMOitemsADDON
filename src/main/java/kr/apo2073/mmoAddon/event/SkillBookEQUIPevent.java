@@ -40,7 +40,7 @@ public class SkillBookEQUIPevent implements Listener {
         );
         if (NBTItem.get(item).getType()==null) return;
         if (key == null) return;
-        if (!player.hasPermission("mmoitems.magic")) return;
+        if (!player.hasPermission("mmoaddon.magic")) return;
         MMoAddon addon = new MMoAddon(item);
         JsonArray json = new Gson().fromJson(key, JsonArray.class);
         try {

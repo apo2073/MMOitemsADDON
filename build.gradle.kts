@@ -1,7 +1,7 @@
 plugins {
     kotlin("jvm") version "2.0.21"
     id("com.github.johnrengelman.shadow") version "8.1.1"
-   //id("io.papermc.paperweight.userdev") version "1.7.3"
+    //id("io.papermc.paperweight.userdev") version "1.7.4"
     id("maven-publish")
 }
 
@@ -23,18 +23,19 @@ afterEvaluate {
                 }
             }
         }
-}
+    }
 }
 
 repositories {
+    gradlePluginPortal()
     mavenCentral()
+    mavenLocal()
     maven("https://repo.papermc.io/repository/maven-public/") {
         name = "papermc-repo"
     }
     maven("https://oss.sonatype.org/content/groups/public/") {
         name = "sonatype"
     }
-    maven("https://nexus.phoenixdvpt.fr/repository/maven-public/")
     maven("https://nexus.phoenixdevt.fr/repository/maven-public/") {
         name="phoenix"
     }
@@ -46,6 +47,7 @@ repositories {
 dependencies {
     compileOnly("io.papermc.paper:paper-api:1.20.1-R0.1-SNAPSHOT")
     //paperweight.paperDevBundle("1.20.1-R0.1-SNAPSHOT")
+    //paperweightDevBundle("io.papermc.paper:dev-bundle:1.20.1-R0.1-SNAPSHOT")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
 
     implementation("io.lumine:MythicLib-dist:1.7.1-SNAPSHOT")

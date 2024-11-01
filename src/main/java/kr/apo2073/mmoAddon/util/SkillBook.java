@@ -12,6 +12,7 @@ import kr.apo2073.mmoAddon.exception.SkillBookNULL;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
@@ -55,10 +56,13 @@ public class SkillBook {
                             ? 0 : mma.getConfig().getInt("skillbook."+addon.getItemSkillID()))
                     .build();
             ItemMeta meta= book.getItemMeta();
-            meta.getPersistentDataContainer().set(new NamespacedKey(MMOAddons.plugin, "json"), PersistentDataType.STRING, json.toString());
+
+            meta.getPersistentDataContainer().set(new NamespacedKey(MMOAddons.plugin, "json"), PersistentDataType.STRING, "\""+json+"\"");
             mma.debug("skill book pdc set : "+meta.getPersistentDataContainer().get(new NamespacedKey(MMOAddons.plugin, "json"), PersistentDataType.STRING));
+
             book.setItemMeta(meta);
             mma.debug("getting skill book from json : "+json);
+
             return book;
         } catch (Exception e) {
             e.printStackTrace();
@@ -74,10 +78,8 @@ public class SkillBook {
                 "§l§d스킬북 §b[ " + addon.getItemSkillID().replace("_", " ")+ " §b]"
                 ).setLore(getLore(json, player).toArray(new String[0]));
         ItemMeta meta=mmoItems.getItemMeta();
-        meta.getPersistentDataContainer().set(new NamespacedKey(MMOAddons.plugin, "json"), PersistentDataType.STRING,json.toString());
+        meta.getPersistentDataContainer().set(new NamespacedKey(MMOAddons.plugin, "json"), PersistentDataType.STRING, "\""+json+"\"");
         mmoItems.setItemMeta(meta);
-        NBTItem nbtItem=NBTItem.get(mmoItems);
-        nbtItem.addTag(new ItemTag("MMOITEM_ABILITY", json.toString()));
         return mmoItems;
     }
 

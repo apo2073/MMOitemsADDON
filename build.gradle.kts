@@ -6,7 +6,7 @@ plugins {
 }
 
 group = "kr.apo2073"
-version = "1.1"
+version = "1.2"
 
 afterEvaluate {
     publishing {
@@ -15,7 +15,7 @@ afterEvaluate {
                 from(components["java"])
                 groupId = "com.github.apo2073"
                 artifactId = "MMOAddon"
-                version = "1.0"
+                version = "1.2"
 
                 pom {
                     name.set("MMOAddon")
@@ -52,7 +52,8 @@ dependencies {
 
     implementation("io.lumine:MythicLib-dist:1.7.1-SNAPSHOT")
     compileOnly("io.lumine:Mythic-Dist:5.4.0")
-    implementation("net.Indyuce:MMOItems-API:6.9.5-SNAPSHOT")
+    //implementation("net.Indyuce:MMOItems-API:6.9.4-SNAPSHOT")
+    implementation("net.Indyuce:MMOItems-API:6.10-SNAPSHOT")
     compileOnly("net.Indyuce:MMOCore-API:1.13.1-SNAPSHOT")
 
     compileOnly("me.clip:placeholderapi:2.11.6")

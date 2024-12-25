@@ -80,6 +80,10 @@ public class SkillBookGUI implements Listener {
         inv.setItem(49, new ItemBuilder(new ItemStack(Material.LIME_STAINED_GLASS_PANE))
                 .setDisplayName("§aDone")
                 .build());
+        inv.setItem(43, new ItemBuilder(new ItemStack(Material.COMPASS))
+                .setDisplayName("§btimer")
+                .setLore(List.of("0"))
+                .build());
         mma.debug("Skill Book setting GUI called");
         return inv;
     }
@@ -117,7 +121,7 @@ public class SkillBookGUI implements Listener {
                 inv.setItem(2, skillName);
                 player.openInventory(inv);
             }*/
-            case LAPIS_LAZULI, RABBIT_FOOT, CLOCK, POTION, HEART_OF_THE_SEA, IRON_SWORD, SPLASH_POTION, BREWING_STAND -> {
+            case LAPIS_LAZULI, RABBIT_FOOT, CLOCK, POTION, HEART_OF_THE_SEA, IRON_SWORD, SPLASH_POTION, BREWING_STAND, COMPASS -> {
                 if (clicked.getItemMeta() == null
                         || clicked.getItemMeta().getLore() == null
                         || clicked.getItemMeta().getLore().isEmpty())
@@ -154,16 +158,15 @@ public class SkillBookGUI implements Listener {
                     }
 
                     if (e.getClick().isLeftClick()) {
-                        currentValue += .5;
+                        currentValue+=.5;
                     } else if (e.getClick().isRightClick()) {
-                        currentValue -= .5;
+                        currentValue-=.5;
                     }
 
                     currentValue = Math.max(0, currentValue);
-                    currentValue = Math.round(currentValue * 10.0) / 10.0;
 
                     ItemMeta meta = clicked.getItemMeta();
-                    meta.lore(List.of(Component.text(String.format("%.1f", currentValue)).color(NamedTextColor.WHITE)));
+                    meta.setLore(List.of(String.valueOf(currentValue)));
                     clicked.setItemMeta(meta);
 
                     e.getInventory().setItem(e.getSlot(), clicked);

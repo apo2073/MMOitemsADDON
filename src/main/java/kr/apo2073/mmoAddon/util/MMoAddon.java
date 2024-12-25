@@ -166,7 +166,7 @@ public class MMoAddon {
         JsonObject modifiers = new JsonObject();
         for (HashMap<String, Object> map : value) {
             for (Map.Entry<String, Object> entry : map.entrySet()) {
-                modifiers.addProperty(entry.getKey(), entry.getValue().toString());
+                modifiers.addProperty(entry.getKey(), Double.parseDouble(entry.getValue().toString()));
             }
         }
         json.add("Modifiers", modifiers);
@@ -212,7 +212,7 @@ public class MMoAddon {
             Arrays.stream(value)
                     .flatMap(map -> map.entrySet().stream())
                     .filter(entry -> entry != null && entry.getKey() != null && entry.getValue() != null)
-                    .forEach(entry -> modifiers.addProperty(entry.getKey(), (Double) entry.getValue()));
+                    .forEach(entry -> modifiers.addProperty(entry.getKey(), /*(Double) */entry.getValue().toString()));
             if (MMOItems.plugin.getSkills().getSkill(skill)!=null) {
                 mma.debug("Adding ability to MMOItems.");
                 JsonObject skillJson = new JsonObject();

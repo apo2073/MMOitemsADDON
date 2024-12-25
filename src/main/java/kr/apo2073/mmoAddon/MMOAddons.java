@@ -58,7 +58,8 @@ public class MMOAddons extends JavaPlugin {
     }
 
     public void debug(String log) {
-        reloadConfig();this.reloadConfig();
+        reloadConfig();
+        isDebug=getConfig().getBoolean("debug");
         if (isDebug) Bukkit.getLogger().warning("[ MMOAddon DEBUG ] "+log);
     }
 

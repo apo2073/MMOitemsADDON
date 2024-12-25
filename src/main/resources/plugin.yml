@@ -1,5 +1,5 @@
 name: MMOAddon
-version: '1.1'
+version: ${version}
 main: kr.apo2073.mmoAddon.MMOAddons
 api-version: '1.20'
 authors: [ 아포칼립스 ]

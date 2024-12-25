@@ -37,7 +37,9 @@ public class SkillBookEQUIPevent implements Listener {
                 || item == null || item.getType() == Material.AIR) return;
         String key = book.getItemMeta().getPersistentDataContainer().get(
                 new NamespacedKey(MMOAddons.plugin, "json"), PersistentDataType.STRING
-        ).replaceAll("\"", "");
+        );
+        if (key == null) return;
+        key=key.replace("\"", "");
         //String key=NBTItem.get(book).getString("MMOADDON");
         if (NBTItem.get(item).getType()==null) return;
         if (key == null) return;

@@ -3,16 +3,14 @@ package kr.apo2073.mmoAddon.util;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import io.lumine.mythic.lib.api.item.ItemTag;
-import io.lumine.mythic.lib.api.item.NBTItem;
 import kr.apo2073.lib.Items.ItemBuilder;
 import kr.apo2073.lib.Plugins.CompKt;
 import kr.apo2073.mmoAddon.MMOAddons;
 import kr.apo2073.mmoAddon.exception.SkillBookNULL;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
@@ -29,7 +27,7 @@ public class SkillBook {
             MMoAddon addon = new MMoAddon(item);
             ItemStack book = new ItemBuilder(new ItemStack(Material.ENCHANTED_BOOK))
                     .setItemName(CompKt.txt("§l§d스킬북 §b[ " + addon.getItemName() + " §b]"))
-                    .setLore(getLore(item))
+                    .setDescription(getLore(item))
                     .setCustomModelData(mma.getConfig().get("skillbook."+addon.getItemName())==null
                             ? 0 : mma.getConfig().getInt("skillbook."+addon.getItemName()))
                     .build();
@@ -48,10 +46,10 @@ public class SkillBook {
             mma.reloadConfig();
             MMoAddon addon =new MMoAddon(player);
             addon.setAbilitiesJson(json);
+            String name="§l§d스킬북 §b[ " + addon.getItemSkillID().replace("_", " ")+ " §b]";
             ItemStack book= new ItemBuilder(new ItemStack(Material.ENCHANTED_BOOK))
-                    .setItemName(CompKt.txt("§l§d스킬북 §b[ "
-                            + addon.getItemSkillID().replace("_", " ")+ " §b]"))
-                    .setLore(getLore(json, player))
+                    .setItemName(StringToAdventureComponent.toAdventureComponent(name))
+                    .setDescription(getLore(json, player))
                     .setCustomModelData(mma.getConfig().get("skillbook."+addon.getItemSkillID())==null
                             ? 0 : mma.getConfig().getInt("skillbook."+addon.getItemSkillID()))
                     .build();
@@ -83,31 +81,31 @@ public class SkillBook {
         return mmoItems;
     }
 
-    public List<String> getLore(ItemStack item) {
-        List<String> lore= new ArrayList<>();
+    public List<Component> getLore(ItemStack item) {
+        List<Component> lore= new ArrayList<>();
         MMoAddon addon =new MMoAddon(item);
         for (JsonElement element: addon.getAbilitiesJson()) {
             JsonObject object=element.getAsJsonObject();
             String castMode=object.get("CastMode").getAsString();
-            lore.add("§a>§8| §7"+castMode +" §8|§e|§8| §7§l"+ addon.getItemSkillID());
+            lore.add(StringToAdventureComponent.toAdventureComponent("§a>§8| §7"+castMode +" §8|§e|§8| §7§l"+ addon.getItemSkillID()));
             addon.getModifiers().forEach((s, o) -> {
-                lore.add(" §3>§8| §7"+s+"§8: §f"+o);
+                lore.add(StringToAdventureComponent.toAdventureComponent(" §3>§8| §7"+s+"§8: §f"+o));
             });
         }
         mma.debug("skill book lore returned");
         return lore;
     }
 
-    public List<String> getLore(JsonArray json, Player player) {
-        List<String> lore= new ArrayList<>();
+    public List<Component> getLore(JsonArray json, Player player) {
+        List<Component> lore= new ArrayList<>();
         for (JsonElement element: json) {
             MMoAddon addon =new MMoAddon(player);
             addon.setAbilitiesJson(json);
             JsonObject object=element.getAsJsonObject();
             String castMode=object.get("CastMode").getAsString();
-            lore.add("§a>§8| §7"+castMode +" §8|§e|§8| §7§l"+ addon.getItemSkillID());
+            lore.add(StringToAdventureComponent.toAdventureComponent("§a>§8| §7"+castMode +" §8|§e|§8| §7§l"+ addon.getItemSkillID()));
             addon.getModifiers().forEach((s, o) -> {
-                lore.add(" §3>§8| §7"+s+"§8: §f"+o);
+                lore.add(StringToAdventureComponent.toAdventureComponent(" §3>§8| §7"+s+"§8: §f"+o));
             });
         }
         mma.debug("skill book lore returned");

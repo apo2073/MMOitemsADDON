@@ -6,7 +6,7 @@ plugins {
 }
 
 group = "kr.apo2073"
-version = "1.2"
+version = "1.2.1"
 
 afterEvaluate {
     publishing {
@@ -15,7 +15,7 @@ afterEvaluate {
                 from(components["java"])
                 groupId = "com.github.apo2073"
                 artifactId = "MMOAddon"
-                version = "1.2"
+                version = "1.2.1"
 
                 pom {
                     name.set("MMOAddon")

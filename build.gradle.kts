@@ -1,5 +1,5 @@
 plugins {
-    kotlin("jvm") version "2.0.21"
+    kotlin("jvm") version "2.1.0"
     id("com.github.johnrengelman.shadow") version "8.1.1"
     //id("io.papermc.paperweight.userdev") version "1.7.4"
     id("maven-publish")
@@ -15,7 +15,7 @@ afterEvaluate {
                 from(components["java"])
                 groupId = "com.github.apo2073"
                 artifactId = "MMOAddon"
-                version = "1.2.1"
+                version = version
 
                 pom {
                     name.set("MMOAddon")
@@ -42,6 +42,7 @@ repositories {
     maven("https://repo.extendedclip.com/content/repositories/placeholderapi/")
     maven("https://jitpack.io")
     maven("https://repo.skriptlang.org/releases")
+    maven("https://repo.codemc.io/repository/maven-snapshots/")
 }
 
 dependencies {
@@ -60,6 +61,8 @@ dependencies {
 
     implementation("com.github.apo2073:ApoLib:1.0.4")
     implementation("com.github.SkriptLang:Skript:2.9.3")
+
+//    implementation("net.wesjd:anvilgui:1.10.4-SNAPSHOT")
 }
 
 val targetJavaVersion = 17
@@ -70,6 +73,11 @@ kotlin {
 tasks.build {
     dependsOn("shadowJar")
 }
+//
+//tasks.shadowJar {
+//    relocate("net.wesjd.anvilgui", "kr.apo2073.mmoAddon.anvilgui")
+//    minimize()
+//}
 
 tasks.processResources {
     val props = mapOf("version" to version)

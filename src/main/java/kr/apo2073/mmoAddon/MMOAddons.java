@@ -5,7 +5,6 @@ import ch.njol.skript.SkriptAddon;
 import kr.apo2073.lib.Plugins.Register;
 import kr.apo2073.mmoAddon.cmd.getSkillBookCmd;
 import kr.apo2073.mmoAddon.cmd.getSkillBookFromItem;
-import kr.apo2073.mmoAddon.event.AnvilGUI;
 import kr.apo2073.mmoAddon.event.SkillBookEQUIPevent;
 import kr.apo2073.mmoAddon.util.PapiRg;
 import kr.apo2073.mmoAddon.util.SkillBookGUI;
@@ -39,7 +38,6 @@ public class MMOAddons extends JavaPlugin {
         new Register(this)
                 .resistEventListener(new SkillBookEQUIPevent())
                 .resistEventListener(new SkillBookGUI())
-                .resistEventListener(new AnvilGUI())
                 .resistTabExecutor("스킬북", new getSkillBookCmd())
                 .resistCommandExecutor("스킬북추출", new getSkillBookFromItem());
 

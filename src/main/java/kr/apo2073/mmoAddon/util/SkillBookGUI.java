@@ -2,7 +2,6 @@ package kr.apo2073.mmoAddon.util;
 
 import kr.apo2073.lib.Items.ItemBuilder;
 import kr.apo2073.mmoAddon.MMOAddons;
-import kr.apo2073.mmoAddon.event.AnvilGUI;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -173,9 +172,6 @@ public class SkillBookGUI implements Listener {
                 }
             }
             case LIME_STAINED_GLASS_PANE -> {
-                AnvilGUI gui=new AnvilGUI();
-                gui.skill.put(player, "none");
-                gui.castmode.put(player, "none");
                 MMoAddon addon=new MMoAddon(player);
                 String skillID= Objects.requireNonNull(e.getInventory().getItem(19)).getItemMeta().getLore().get(0).replace("§d", "");
                 String castMode= Objects.requireNonNull(e.getInventory().getItem(20)).getItemMeta().getLore().get(0).replace("§a", "");
@@ -214,13 +210,4 @@ public class SkillBookGUI implements Listener {
             }
         }
     }
-
-    /*@EventHandler
-    public void onClose(InventoryCloseEvent e) {
-        if (!e.getView().getOriginalTitle().contains("§6Skill §fBook")) return;
-        Player player = (Player) e.getPlayer();
-        AnvilGUI gui=new AnvilGUI();
-        gui.skill.put(player, "none");
-        gui.castmode.put(player, "none");
-    }*/
 }
